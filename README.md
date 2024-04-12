@@ -96,6 +96,9 @@ Para instalar e executar este sistema, é necessário cumprir os seguintes requi
 ## Licença
 Este sistema é distribuído sob a licença MIT. Consulte o arquivo LICENSE para obter mais informações.
 
+## Contribuição
+Se você deseja contribuir para o desenvolvimento deste sistema, por favor, siga as diretrizes de contribuição especificadas no arquivo CONTRIBUTING.md do repositório.
+
 ## Autor
 - [Github] [github/petersonmdev](https://www.github.com/petersonmdev)
 - [Email] [petersondmb@gmail.com](mailto:petersondmb@gmail.com)
