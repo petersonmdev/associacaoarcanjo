@@ -28,7 +28,6 @@ package-lock.log
 /public/css
 /public/js
 /public/mix-manifest.json
-# But not these files...
 !/public/assets/*
 /public/assets/js
 /public/assets/css
