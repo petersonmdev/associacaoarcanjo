@@ -1,7 +1,6 @@
 name: associacaoarcanjo.com.br deployment
 on:
   push:
-    branches: [**]
 jobs:
   build:
     runs-on:  ubuntu-latest
