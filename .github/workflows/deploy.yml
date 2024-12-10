@@ -52,9 +52,9 @@ jobs:
           echo "${{ secrets.SERVER_SSH_KEY  }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -t rsa -p ${{ vars.REMOTE_PORT }} ${{ vars.REMOTE_HOST }} >> ~/.ssh/known_hosts
-      - name: Copy Build Files to Target Server
-        run: |
-          rsync -r -e "ssh -p ${{ vars.REMOTE_PORT }}" ${{ github.workspace }}/public/build/ ${{ vars.REMOTE_USER }}@${{ vars.REMOTE_HOST }}:~/domains/associacaoarcanjo.com.br/public/build
+#      - name: Copy Build Files to Target Server
+#        run: |
+#          rsync -r -e "ssh -p ${{ vars.REMOTE_PORT }}" ${{ github.workspace }}/public/build/ ${{ vars.REMOTE_USER }}@${{ vars.REMOTE_HOST }}:~/domains/associacaoarcanjo.com.br/public/build
 
   # deploy production
 #  deploy-production:
