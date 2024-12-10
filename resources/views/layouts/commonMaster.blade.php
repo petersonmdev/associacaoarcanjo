@@ -28,12 +28,15 @@
 
 <body>
 
+  @if (config('app.env') != 'production')
+    <div class="bg-danger text-center" style="position: relative;z-index: 2000;">
+      <h6 class="text-center text-white p-1">AMBIENTE DE TESTES</h6>
+    </div>
+  @endif
 
   <!-- Layout Content -->
   @yield('layoutContent')
   <!--/ Layout Content -->
-
-
 
   <!-- Include Scripts -->
   @include('layouts/sections/scripts')
