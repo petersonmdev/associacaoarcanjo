@@ -16,13 +16,19 @@ jobs:
       name: production
       url: ${{ vars.URL }}
     steps:
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
       - name: Repo Checkout
         uses: actions/checkout@v2
       - uses: actions/setup-node@v3
         with:
           node-version: 16
       - name: Copy .env
-        run: cp .env.example .env
+        run: |
+          if [ ! -f .env ]; then
+            cp .env.example .env
+          fi
       - name: Install composer Dependencies
         run: composer update && composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
       - name: Install node dependencies
