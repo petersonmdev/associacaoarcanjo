@@ -9,11 +9,11 @@ jobs:
       - name: Build
         run: echo Building the app
 
-  # deploy production
-  deploy-production:
+  # deploy homolog
+  deploy-homolog:
     runs-on:  ubuntu-latest
     environment:
-      name: production
+      name: homolog
       url: ${{ vars.URL }}
     steps:
       - uses: shivammathur/setup-php@v2
@@ -24,11 +24,6 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 16
-      - name: Copy .env
-        run: |
-          if [ ! -f .env ]; then
-            cp .env.example .env
-          fi
       - name: Install composer Dependencies
         run: composer update && composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
       - name: Install node dependencies
@@ -52,12 +47,46 @@ jobs:
             git pull
             php composer.phar install
             php artisan migrate --force
-      - name: Install SSH key
+
+  # deploy production
+  deploy-production:
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+      url: ${{ vars.URL }}
+    needs: deploy-homolog
+    steps:
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+      - name: Repo Checkout
+        uses: actions/checkout@v2
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - name: Install composer Dependencies
+        run: composer update && composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+      - name: Install node dependencies
+        run: npm install
+      - name: Setup Project
         run: |
-          mkdir -p ~/.ssh/
-          echo "${{ secrets.SERVER_SSH_KEY  }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -t rsa -p ${{ vars.REMOTE_PORT }} ${{ vars.REMOTE_HOST }} >> ~/.ssh/known_hosts
+          npm run dev
+      - name: Deploy PHP to Server
+        if: ${{ success() }}
+        uses: easingthemes/ssh-deploy@main
+        with:
+          SSH_PRIVATE_KEY: ${{ secrets.SERVER_SSH_KEY }}
+          REMOTE_HOST: ${{ vars.REMOTE_HOST }}
+          REMOTE_USER: ${{ vars.REMOTE_USER }}
+          REMOTE_PORT: ${{ vars.REMOTE_PORT }}
+          TARGET: ${{ vars.TARGET }}
+          script_stop: true
+          script: |
+            cd domains
+            cd laravel-space.com
+            git pull
+            php composer.phar install
+            php artisan migrate --force
 #      - name: Copy Build Files to Target Server
 #        run: |
 #          rsync -r -e "ssh -p ${{ vars.REMOTE_PORT }}" ${{ github.workspace }}/public/build/ ${{ vars.REMOTE_USER }}@${{ vars.REMOTE_HOST }}:~/domains/associacaoarcanjo.com.br/public/build
