@@ -15,7 +15,7 @@ jobs:
     environment:
       name: production
       url: ${{ vars.URL }}
-    needs: deploy-development
+    needs: deploy-production
     steps:
       - name: Repo Checkout
         uses: actions/checkout@v2
