@@ -83,7 +83,7 @@ return [
     |
     */
 
-  'locale' => 'en',
+  'locale' => 'pt-BR',
 
   /*
     |--------------------------------------------------------------------------
@@ -96,7 +96,7 @@ return [
     |
     */
 
-  'fallback_locale' => 'en',
+  'fallback_locale' => 'pt-BR',
 
   /*
     |--------------------------------------------------------------------------
@@ -109,7 +109,7 @@ return [
     |
     */
 
-  'faker_locale' => 'en_US',
+  'faker_locale' => 'pt-BR',
 
   /*
     |--------------------------------------------------------------------------
@@ -171,7 +171,8 @@ return [
         App\Providers\FortifyServiceProvider::class,
         App\Providers\JetstreamServiceProvider::class,
     App\Providers\MenuServiceProvider::class,
-    Mckenziearts\Notify\LaravelNotifyServiceProvider::class
+    Mckenziearts\Notify\LaravelNotifyServiceProvider::class,
+    RealRashid\SweetAlert\SweetAlertServiceProvider::class,
   ])->toArray(),
 
   /*
@@ -187,6 +188,7 @@ return [
 
   'aliases' => Facade::defaultAliases()->merge([
     // 'Example' => App\Facades\Example::class,
+    'Alert' => RealRashid\SweetAlert\Facades\Alert::class,
   ])->toArray(),
 
 ];

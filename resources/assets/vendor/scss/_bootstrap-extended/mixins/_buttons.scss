@@ -44,7 +44,7 @@
 
   #{$parent} {
     color: $color;
-    @include gradient-bg($background);
+    @include gradient-bg($background !important);
     border-color: $border;
     @include box-shadow($btn-box-shadow);
     box-shadow: 0 0.125rem 0.25rem 0 rgba($background, 0.4);

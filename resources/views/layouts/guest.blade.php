@@ -58,7 +58,9 @@
   {{ $slot }}
 </div>
 
-@livewireScripts
+{{--@livewireScripts--}}
+
 @include('layouts/sections/scripts')
+@include('sweetalert::alert')
 </body>
 </html>

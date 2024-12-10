@@ -114,7 +114,10 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 
 // assisted
 Route::get('/assisted/list', [App\Http\Controllers\AssistedController::class, 'index'])->name('assisted-list');
-Route::get('/assisted/new', [App\Http\Controllers\AssistedController::class, 'store'])->name('assisted-new');
+Route::get('/assisted/new', [App\Http\Controllers\AssistedController::class, 'store'])->name('assisted-store');
+Route::get('/assisted/edit/{id}', [App\Http\Controllers\AssistedController::class, 'update'])->name('assisted-update');
+Route::get('/assisted/show/{id}', [App\Http\Controllers\AssistedController::class, 'show'])->name('assisted-show');
+Route::get('/assisted/show/pdf/{id}', [App\Http\Controllers\AssistedController::class, 'showPdf'])->name('assisted-show-pdf');
 
 // voluntary
 Route::get('/voluntary/list', [App\Http\Controllers\VoluntaryController::class, 'index'])->name('voluntary-list');

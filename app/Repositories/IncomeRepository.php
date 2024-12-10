@@ -12,6 +12,6 @@ class IncomeRepository extends AbstractRepository
 
   public static function findByAssistedId(int $assisted_id)
   {
-    return self::loadModel()::query()->where(['assisted_id' => $assisted_id])->first();
+    return self::loadModel()::where('assisted_id', $assisted_id)->get();
   }
 }

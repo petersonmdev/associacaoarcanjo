@@ -12,7 +12,7 @@ class DependentRepository extends AbstractRepository
 
   public static function findByAssistedId(int $assisted_id)
   {
-    return self::loadModel()::query()->where(['assisted_id' => $assisted_id]);
+    return self::loadModel()::query()->where('assisted_id', $assisted_id)->get();
   }
 
   public static function findByDependentName(string $dependent_name)

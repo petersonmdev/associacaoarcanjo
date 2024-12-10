@@ -2,8 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Assisted;
+use App\Repositories\AddressRepository;
+use App\Repositories\AssistedRepository;
+use App\Repositories\ContactRepository;
+use App\Repositories\DependentRepository;
+use App\Repositories\IncomeRepository;
+use App\Repositories\VoluntaryRepository;
 use Illuminate\Http\Request;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class AssistedController extends Controller
 {
@@ -19,7 +25,7 @@ class AssistedController extends Controller
      */
     public function index()
     {
-      return view('app.assisted-list');
+      return view('app.assisted.index');
     }
 
     /**
@@ -32,7 +38,7 @@ class AssistedController extends Controller
     {
         /*$assisted = Assisted::create($request->all());
         return $assisted;*/
-        return view('app.assisted-new');
+        return view('app.assisted.create');
     }
 
     /**
@@ -41,9 +47,31 @@ class AssistedController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(int $id)
     {
-        //
+        $assisted = AssistedRepository::find($id);
+        $addresses = AddressRepository::find($assisted->address_id);
+        $contacts = ContactRepository::find($assisted->contact_id);
+        $dependents = DependentRepository::findByAssistedId($assisted->id);
+        $incomes = IncomeRepository::findByAssistedId($assisted->id);
+        $voluntary = VoluntaryRepository::find($assisted->voluntary_id);
+        return view('app.assisted.show', [
+          'assisted' => $assisted,
+          'addresses' => $addresses,
+          'contacts' => $contacts,
+          'dependents' => $dependents,
+          'incomes' => $incomes,
+          'voluntary' => $voluntary
+        ]);
+    }
+
+    public function showPdf(int $id)
+    {
+      $assisted = AssistedRepository::find($id);
+      return view('app.assisted.pdf.show', [
+        'id' => $id,
+        'assisted' => $assisted
+      ]);
     }
 
     /**
@@ -55,7 +83,11 @@ class AssistedController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+      $assisted = AssistedRepository::find($id);
+      return view('app.assisted.update', [
+        'id' => $id,
+        'assisted' => $assisted
+      ]);
     }
 
     /**

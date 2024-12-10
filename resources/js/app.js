@@ -1,110 +1,56 @@
-/*
-  Add custom scripts here
-*/
-"use strict";
-!function() {
-  const e = document.querySelector("#autosize-demo")
-    , t = document.querySelector(".credit-card-mask")
-    , r = document.querySelector(".phone-number-mask")
-    , a = document.querySelector(".date-mask")
-    , n = document.querySelector(".time-mask")
-    , o = document.querySelector(".numeral-mask")
-    , l = document.querySelector(".block-mask")
-    , s = document.querySelector(".delimiter-mask")
-    , c = document.querySelector(".custom-delimiter-mask")
-    , i = document.querySelector(".prefix-mask");
-  e && autosize(e),
-  t && new Cleave(t,{
-    creditCard: !0,
-    onCreditCardTypeChanged: function(e) {
-      document.querySelector(".card-type").innerHTML = "" != e && "unknown" != e ? '<img src="' + assetsPath + "img/icons/payments/" + e + '-cc.png" height="28"/>' : ""
-    }
-  }),
-  r && new Cleave(r,{
-    phone: !0,
-    phoneRegionCode: "BR"
-  }),
-  a && new Cleave(a,{
-    date: !0,
-    delimiter: "-",
-    datePattern: ["Y", "m", "d"]
-  }),
-  n && new Cleave(n,{
-    time: !0,
-    timePattern: ["h", "m", "s"]
-  }),
-  o && new Cleave(o,{
-    numeral: !0,
-    numeralThousandsGroupStyle: "thousand"
-  }),
-  l && new Cleave(l,{
-    blocks: [4, 3, 3],
-    uppercase: !0
-  }),
-  s && new Cleave(s,{
-    delimiter: "·",
-    blocks: [3, 3, 3],
-    uppercase: !0
-  }),
-  c && new Cleave(c,{
-    delimiters: [".", ".", "-"],
-    blocks: [3, 3, 3, 2],
-    uppercase: !0
-  }),
-  i && new Cleave(i,{
-    prefix: "+63",
-    blocks: [3, 3, 3, 4],
-    uppercase: !0
-  })
-}(),
-  $((function() {
-      var e = $(".bootstrap-maxlength-example")
-        , t = $(".form-repeater");
-      if (e.length && e.each((function() {
-          $(this).maxlength({
-            warningClass: "label label-success bg-success text-white",
-            limitReachedClass: "label label-danger",
-            separator: " out of ",
-            preText: "You typed ",
-            postText: " chars available.",
-            validate: !0,
-            threshold: +this.getAttribute("maxlength")
-          })
-        }
-      )),
-        t.length) {
-        var r = 2
-          , a = 1;
-        t.on("submit", (function(e) {
-            e.preventDefault()
-          }
-        )),
-          t.repeater({
-            show: function() {
-              var e = $(this).find(".form-control, .form-select")
-                , t = $(this).find(".form-label");
-              e.each((function(n) {
-                  var o = "form-repeater-" + r + "-" + a;
-                  $(e[n]).attr("id", o),
-                    $(t[n]).attr("for", o),
-                    a++
-                }
-              )),
-                r++,
-                $(this).slideDown()
-            },
-            hide: function(e) {
-              confirm("Are you sure you want to delete this element?") && $(this).slideUp(e)
-            }
-          })
+import Swal from '../assets/vendor/libs/sweetalert2/sweetalert2.js'
+window.addEventListener('alert', (event) => {
+  let data = event.detail;
+
+  if (data.type==='warning') {
+    Swal.fire({
+      title: data.title,
+      text: data.text,
+      icon: data.type,
+      showCancelButton: true,
+      confirmButtonColor: "#66C732",
+      cancelButtonColor: "#e6381a",
+      confirmButtonText: "Sim, Remover!"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Swal.fire({
+          title: "Removido!",
+          text: "O registro foi deletado.",
+          icon: "success"
+        });
       }
+    });
+  } else if (data.type==='save') {
+    Swal.fire({
+      title: data.title,
+      showDenyButton: true,
+      showCancelButton: true,
+      confirmButtonText: "Savar",
+      denyButtonText: `Não salvar`
+    }).then((result) => {
+      /* Read more about isConfirmed, isDenied below */
+      if (result.isConfirmed) {
+        Swal.fire("Salvo!", "", "success");
+      } else if (result.isDenied) {
+        Swal.fire("Alterações descartadas", "", "info");
+      }
+    });
+  } else {
+    Swal.fire({
+      position: (data.position) ?? 'center',
+      icon: data.type,
+      title: data.title,
+      showConfirmButton: false,
+      timer: (data.timer) ?? 1500,
+    });
+  }
+});
+
+window.addEventListener('livewire:initialized', (event) => {
+  Livewire.hook('morph.updated', ({ el, component }) => {
+    const firstInvalidElement = document.querySelector('.is-invalid');
+    if (firstInvalidElement) {
+      firstInvalidElement.focus();
     }
-  ));
-
-import Alpine from 'alpinejs'
-import mask from '@alpinejs/mask'
-
-window.Alpine = Alpine
-Alpine.plugin(mask)
-
-Alpine.start()
+  });
+});

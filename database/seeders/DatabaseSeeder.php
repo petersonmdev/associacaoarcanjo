@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -12,19 +11,37 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        \App\Models\User::factory(30)->create();
+        $adminUser = \App\Models\User::factory()->create([
+            'name' => 'Administrador',
+            'email' => 'admin@email.com',
+            'password' => bcrypt('123456789'),
+        ]);
 
-        \App\Models\User::factory()->create([
-            'name' => 'Peterson Macedo',
-            'email' => 'petersondmb@gmail.com',
-            'password' => md5('123456789'),
+        $adminAddress = \App\Repositories\AddressRepository::create([
+            'zipcode' => '99999999',
+            'address' => 'Rua teste',
+            'number' => 100,
+            'complement' => 'quadra teste, lote teste',
+            'neighborhood' => 'sul',
+            'city' => 'Trindade',
+            'state' => 'GO'
+        ]);
+
+        $adminContact = \App\Repositories\ContactRepository::create([
+            'phone_number_whatsapp' => '(99)99999-9999',
+            'phone_number1' => '(99)99999-9999',
+            'phone_number2' => '(99)99999-9999'
         ]);
 
         \App\Repositories\VoluntaryRepository::create([
-          'name' => 'Peterson Macedo Voluntário',
-          'user_id' => 31,
-          'email' => 'petersondmb@gmail.com',
-          'driving' => 1,
+          'name' => 'Administrador Voluntário',
+          'user_id' => $adminUser->id,
+          'address_id' => $adminAddress->id,
+          'contact_id' => $adminContact->id,
+          'taxvat' => '999.999.999-99',
+          'dob' => '1999-01-01',
+          'email' => 'voluntario@email.com',
+          'driving' => true,
         ]);
     }
 }

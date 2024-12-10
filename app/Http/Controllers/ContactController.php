@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\DTO\ContactDTO;
 use Illuminate\Http\Request;
 
 class ContactController extends Controller
@@ -24,7 +25,15 @@ class ContactController extends Controller
      */
     public function store(Request $request)
     {
-        //
+      $dto = new ContactDTO(
+          ...$request->only([
+          "phone_number_whatsapp",
+          "phone_number_1",
+          "phone_number_2"
+        ])
+      );
+      dd($dto->toArray());
+      dd($request->all());
     }
 
     /**

@@ -20,11 +20,6 @@ class CreateDonationCategoriesTable extends Migration
             $table->string('slug', 100);
             $table->timestamps();
         });
-
-        Schema::table('donation_item_categories', function (Blueprint $table) {
-            $table->unsignedBigInteger('donation_category_id');
-            $table->foreign('donation_category_id')->references('id')->on('donation_item_categories');
-        });
     }
 
     /**
@@ -34,11 +29,6 @@ class CreateDonationCategoriesTable extends Migration
      */
     public function down()
     {
-        Schema::table('donation_item_categories', function (Blueprint $table) {
-            $table->dropForeign('donation_item_categories_donation_category_id_foreign');
-            $table->dropColumn('donation_category_id');
-        });
-
         Schema::dropIfExists('donation_categories');
     }
 }

@@ -422,7 +422,6 @@ const Helpers = {
         return this._setMenuHoverState(false)
       }
       layoutMenu.addEventListener('mouseenter', this._menuMouseEnter, false)
-      layoutMenu.addEventListener('touchstart', this._menuMouseEnter, false)
     }
 
     if (!this._menuMouseLeave) {

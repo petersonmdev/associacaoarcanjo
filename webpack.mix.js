@@ -108,6 +108,9 @@ mixAssetsDir('vendor/libs/**/*.js', (src, dest) => mix.js(src, dest));
 mixAssetsDir('vendor/libs/**/!(_)*.scss', (src, dest) =>
   mix.sass(src, dest.replace(/\.scss$/, '.css'), { sassOptions })
 );
+mixAssetsDir('vendor/libs/**/*.css', (src, dest) => {
+  mix.copy(src, dest);
+});
 mixAssetsDir('vendor/libs/**/*.{png,jpg,jpeg,gif}', (src, dest) => mix.copy(src, dest));
 
 // Fonts

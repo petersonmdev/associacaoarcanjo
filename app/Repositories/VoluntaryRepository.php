@@ -13,8 +13,22 @@ class VoluntaryRepository extends AbstractRepository
   public static function findByVoluntaryName(string $voluntary_name)
   {
     return empty($voluntary_name)
-      ? self::loadModel()::query()
-      : self::loadModel()::query()->where('name', 'like', '%' . $voluntary_name . '%');
+      ? self::loadModel()::all()
+      : self::loadModel()::query()->where('voluntaries.name', 'like', '%' . $voluntary_name . '%');
+  }
+
+  public static function findVoluntaryAndAddressByName(string $voluntary_name)
+  {
+    $query = self::loadModel()::query()->select([
+      'voluntaries.*',
+      'addresses.*'
+    ])
+    ->join('address', 'voluntaries.address_id', '=', 'addresses.id')
+    ->orderBy('voluntaries.id', 'desc');
+
+    return empty($voluntary_name)
+      ? $query
+      : $query->where('voluntaries.name', 'like', '%' . $voluntary_name . '%');
   }
 
   public function listPaginate()

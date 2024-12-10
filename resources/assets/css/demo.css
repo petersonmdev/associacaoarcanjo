@@ -180,3 +180,32 @@
 .img-maps-roterization {
   object-fit: cover;
 }
+
+@media print {
+  /* Ajusta a margem e garante que o conteúdo ocupe uma única folha */
+  @page {
+    size: A4; /* Ajusta o tamanho da página para A4 */
+    margin: 10mm; /* Margens pequenas para otimizar o uso do espaço */
+  }
+
+  /* Garante que o conteúdo seja redimensionado para caber em uma única página */
+  body {
+    overflow: hidden;
+  }
+
+  h6, h5, hr, hr.my-2 {
+    margin: 0!important;
+  }
+
+  /* Evita que elementos como barras de navegação apareçam na impressão */
+  .no-print {
+    display: none;
+  }
+
+  /* Força imagens a se ajustar ao tamanho da página */
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+}
+

@@ -12,6 +12,7 @@
 <link rel="stylesheet" href="{{ asset(mix('assets/css/demo.css')) }}" />
 <!-- Vendors CSS -->
 <link rel="stylesheet" href="{{ asset(mix('assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css')) }}" />
+<link rel="stylesheet" href="{{ asset(mix('assets/vendor/libs/select2/select2.css')) }}" />
 
 <!-- Vendor Styles -->
 @yield('vendor-style')

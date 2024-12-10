@@ -24,21 +24,6 @@ class CreateDonationItemsTable extends Migration
             $table->date('expiration_date');
             $table->timestamps();
         });
-
-        Schema::table('donation_movements', function (Blueprint $table) {
-            $table->unsignedBigInteger('donation_item_id');
-            $table->foreign('donation_item_id')->references('id')->on('donation_movements');
-        });
-
-        Schema::table('donation_entries', function (Blueprint $table) {
-            $table->unsignedBigInteger('donation_item_id');
-            $table->foreign('donation_item_id')->references('id')->on('donation_entries');
-        });
-
-        Schema::table('donation_item_categories', function (Blueprint $table) {
-            $table->unsignedBigInteger('donation_item_id');
-            $table->foreign('donation_item_id')->references('id')->on('donation_item_categories');
-        });
     }
 
     /**
@@ -48,21 +33,6 @@ class CreateDonationItemsTable extends Migration
      */
     public function down()
     {
-        Schema::table('donation_movements', function (Blueprint $table) {
-            $table->dropForeign('donation_movements_donation_item_id_foreign');
-            $table->dropColumn('donation_item_id');
-        });
-
-        Schema::table('donation_entries', function (Blueprint $table) {
-            $table->dropForeign('donation_entries_donation_item_id_foreign');
-            $table->dropColumn('donation_item_id');
-        });
-
-        Schema::table('donation_item_categories', function (Blueprint $table) {
-            $table->dropForeign('donation_item_categories_donation_item_id_foreign');
-            $table->dropColumn('donation_item_id');
-        });
-
         Schema::dropIfExists('donation_items');
     }
 }
