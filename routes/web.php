@@ -141,6 +141,9 @@ Route::get('/user/role', [App\Http\Controllers\UserController::class, 'indexRole
 Route::get('/report/assisted', [App\Http\Controllers\ReportAssistedController::class, 'index'])->name('report-assisted');
 Route::get('/report/voluntary', [App\Http\Controllers\ReportVoluntaryController::class, 'index'])->name('report-voluntary');
 
+// Configuration
+Route::get('/configuration/user/{id}', [App\Http\Controllers\ConfigurationController::class, 'user'])->name('configuration-user');
+
 Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),
