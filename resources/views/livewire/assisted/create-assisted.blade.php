@@ -56,7 +56,7 @@
       </div>
     </div>
     <div class="col-12 col-md-8 col-xl-9 border-top border-xl-none border-md-none pt-3 pt-md-0">
-      <livewire:dynamic-component :is="$current" :key="$current"  lazy="on-load" />
+      <livewire:dynamic-component :is="$current" :key="$current" :data="$formData" lazy="on-load" />
     </div>
   </div>
 </div>

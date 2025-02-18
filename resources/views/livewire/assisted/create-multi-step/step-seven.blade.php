@@ -1,7 +1,7 @@
 <div>
   <div class="row setup-content" id="step-7">
     <div class="col-12 title-step mb-3">
-      <h4 class="m-0 text-primary">Vincular voluntário</h4>
+      <h4 class="m-0 text-primary"><span class="tf-icons bx bxs-face fs-3"></span>&nbsp; Voluntário responsável</h4>
       <p>Vincule um voluntário para essa família</p>
     </div>
 
@@ -17,6 +17,8 @@
         @error('data.voluntary_id') <span class="d-block invalid-feedback">{{ $message }}</span> @enderror
       </div>
     </div>
+
+    <hr class="mt-3">
 
     <div class="my-4">
       <div class="col-12">

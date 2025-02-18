@@ -1,7 +1,7 @@
 <div>
   <div class="row setup-content" id="step-1">
     <div class="col-12 title-step mb-3">
-      <h4 class="m-0 text-primary">Dados pessoais</h4>
+      <h4 class="m-0 text-primary"><span class="tf-icons bx bx-info-circle fs-3"></span>&nbsp;Dados pessoais</h4>
       <p>Informações pessoais do títular</p>
     </div>
     <div class="col-12">
@@ -72,6 +72,8 @@
           @error('data.email') <span class="d-block invalid-feedback">{{ $message }}</span> @enderror
         </div>
       </div>
+
+      <hr class="mt-3">
 
       <div class="my-4">
         <div class="col-12">
