@@ -167,9 +167,9 @@
     </div>
     <div class="col-12 mb-4">
       <form class="form-repeater-dependents">
-        <div class="row">
-          @if (array_values($dependents))
-            @foreach($dependents as $index => $dependent)
+        @if (array_values($dependents))
+          @foreach($dependents as $index => $dependent)
+            <div class="item-dependents row bg-footer-theme border p-3 m-0 mb-3">
               <div class="col-12 pb-3">
                 <h5 class="text-secondary">Dependente <span class="fw-medium">{{ '#'.sprintf('%02d', $index+1) }}</span><small class="mx-2 badge rounded-pill bg-secondary fs-tiny">{{$dependent['hash']}}</small></h5>
               </div>
@@ -214,25 +214,24 @@
                 @error('dependents.'.$index.'.pne') <span class="d-block invalid-feedback">{{ $message }}</span> @enderror
               </div>
               <div class="mb-3 col-md-3 col-xl-2 col-6 d-flex align-items-end">
-                <button class="btn btn-outline-danger w-100 mt-4" wire:click.prevent="removeDependentUpdate({{$index}}, {{($dependent['id']) ?? null}})">
+                <button class="btn btn-outline-danger bg-white w-100 mt-4" wire:click.prevent="removeDependentUpdate({{$index}}, {{($dependent['id']) ?? null}})">
                   <i class="bx bx-x me-1"></i> Excluir
                 </button>
               </div>
-              <hr class="my-2 pb-3">
-            @endforeach
-          @else
-            <div class="mb-3 col-12">
-              <div class="alert alert-info text-center" role="alert">
-                Nenhum dependente cadastrado
-              </div>
             </div>
-          @endif
-          <div class="mb-0">
-            <button class="btn btn-outline-primary" type="button" wire:click.prevent="addDependents('{{uniqid()}}')">
-              <i class="tf-icons bx bx bx-add-to-queue me-1"></i>
-              <span class="align-middle">Adicionar dependentes</span>
-            </button>
+          @endforeach
+        @else
+          <div class="mb-3 col-12">
+            <div class="alert alert-info text-center" role="alert">
+              Nenhum dependente cadastrado
+            </div>
           </div>
+        @endif
+        <div class="mb-0">
+          <button class="btn btn-outline-primary" type="button" wire:click.prevent="addDependents('{{uniqid()}}')">
+            <i class="tf-icons bx bx bx-add-to-queue me-1"></i>
+            <span class="align-middle">Adicionar dependentes</span>
+          </button>
         </div>
       </form>
     </div>
@@ -245,11 +244,9 @@
       </div>
     </div>
     <form class="form-repeater-incomes">
-      <div class="row">
-        @if (!empty($incomes))
-          @foreach($incomes as $i => $income)
-            <div class="col-12 pb-3">
-            </div>
+      @if (!empty($incomes))
+        @foreach($incomes as $i => $income)
+          <div class="item-incomes row bg-footer-theme border p-3 m-0 mb-3">
             <div class="mb-3 col-lg-6 col-xl-6 col-12">
               <label class="form-label" for="form-repeater-2-1">Origem da renda</label>
               <input type="text" id="form-repeater-2-1" class="form-control @error('incomes.'.$i.'.name') is-invalid @enderror" wire:model="incomes.{{$i}}.name" placeholder="informe a origem da renda">
@@ -265,23 +262,22 @@
               </div>
             </div>
             <div class="mb-3 col-md-3 col-xl-2 col-6 d-flex align-items-end">
-              <button class="btn btn-outline-danger w-100 mt-4" wire:click.prevent="removeIncomeUpdate({{$i}}, {{($income['id']) ?? null}})">
+              <button class="btn btn-outline-danger bg-white w-100 mt-4" wire:click.prevent="removeIncomeUpdate({{$i}}, {{($income['id']) ?? null}})">
                 <i class="bx bx-x me-1"></i> Excluir
               </button>
             </div>
-            <hr class="my-2 pb-3">
-          @endforeach
-        @else
-          <a href="javascript:void(0);" class="list-group-item list-group-item-action flex-column align-items-start">
-            <p class="mb-1 text-center">Nenhuma renda cadastrada</p>
-          </a>
-        @endif
-        <div class="mb-0">
-          <button class="btn btn-outline-primary" wire:click.prevent="addIncomeUpdate('{{uniqid()}}')">
-            <i class="tf-icons bx bx bx-add-to-queue me-1"></i>
-            <span class="align-middle">Adicionar Renda</span>
-          </button>
-        </div>
+          </div>
+        @endforeach
+      @else
+        <a href="javascript:void(0);" class="list-group-item list-group-item-action flex-column align-items-start">
+          <p class="mb-1 text-center">Nenhuma renda cadastrada</p>
+        </a>
+      @endif
+      <div class="mb-0">
+        <button class="btn btn-outline-primary" wire:click.prevent="addIncomeUpdate('{{uniqid()}}')">
+          <i class="tf-icons bx bx bx-add-to-queue me-1"></i>
+          <span class="align-middle">Adicionar Renda</span>
+        </button>
       </div>
     </form>
 
