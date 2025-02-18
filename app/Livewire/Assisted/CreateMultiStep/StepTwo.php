@@ -14,6 +14,11 @@ class StepTwo extends Component
     'phone_number2' => '',
   ];
 
+  public function mount($data)
+  {
+    $this->data = $data;
+  }
+
   #[Validate([
     'data.phone_number_whatsapp' => 'required|regex:/^\(?\d{2}\)?\s?\d{4,5}-\d{4}$/',
     'data.phone_number_1' => 'regex:/^\(?\d{2}\)?\s?\d{4,5}-\d{4}$/',
@@ -29,6 +34,11 @@ class StepTwo extends Component
   {
     $this->validate();
     $this->dispatch('stepValidated', ['data' => $this->data]);
+  }
+
+  public function back()
+  {
+    $this->dispatch('goToPreviousStep');
   }
 
   public function render()

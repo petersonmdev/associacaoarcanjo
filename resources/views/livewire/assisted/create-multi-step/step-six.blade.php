@@ -1,7 +1,7 @@
 <div>
   <div class="row setup-content" id="step-6">
     <div class="col-12 title-step mb-3">
-      <h4 class="m-0 text-primary">Saúde familiar e social</h4>
+      <h4 class="m-0 text-primary"><span class="tf-icons bx bx-message-square-dots fs-3"></span> Saúde familiar e social</h4>
       <p>Informe o histórico médico e social</p>
     </div>
 
@@ -47,6 +47,8 @@
         @error('data.continuous_medication') <span class="d-block invalid-feedback">{{ $message }}</span> @enderror
       </div>
     </div>
+
+    <hr class="mt-3">
 
     <div class="my-4">
       <div class="col-12">

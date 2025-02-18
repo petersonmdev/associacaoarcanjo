@@ -54,3 +54,12 @@ window.addEventListener('livewire:initialized', (event) => {
     }
   });
 });
+
+window.addEventListener('close-modal', event => {
+  const modalId = event.detail.modalId;
+  const modal = bootstrap.Modal.getInstance(document.getElementById(modalId));
+
+  if (modal) {
+    modal.hide();
+  }
+});

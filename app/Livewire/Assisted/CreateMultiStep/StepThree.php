@@ -32,10 +32,20 @@ class StepThree extends Component
     'data.zipcode.regex' => 'CEP inválido.',
   ])]
 
+  public function mount($data)
+  {
+    $this->data = $data;
+  }
+
   public function validateStep()
   {
     $this->validate();
     $this->dispatch('stepValidated', ['data' => $this->data]);
+  }
+
+  public function back()
+  {
+    $this->dispatch('goToPreviousStep');
   }
 
   public function render()
