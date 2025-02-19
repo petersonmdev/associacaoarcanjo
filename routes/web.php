@@ -141,8 +141,13 @@ Route::get('/user/role', [App\Http\Controllers\UserController::class, 'indexRole
 Route::get('/report/assisted', [App\Http\Controllers\ReportAssistedController::class, 'index'])->name('report-assisted');
 Route::get('/report/voluntary', [App\Http\Controllers\ReportVoluntaryController::class, 'index'])->name('report-voluntary');
 
+// Account
+Route::get('/account/{id}', [App\Http\Controllers\AccountController::class, 'show'])->name('account-user');
+Route::get('/account/security/{id}', [App\Http\Controllers\AccountController::class, 'showSecurity'])->name('account-security-user');
+Route::get('/account/login-history/{id}', [App\Http\Controllers\AccountController::class, 'showLoginHistory'])->name('account-login-user');
+
 // Configuration
-Route::get('/configuration/user/{id}', [App\Http\Controllers\ConfigurationController::class, 'user'])->name('configuration-user');
+Route::get('/configuration/{id}', [App\Http\Controllers\ConfigurationController::class, 'show'])->name('configuration-user');
 
 Route::middleware([
     'auth:sanctum',
