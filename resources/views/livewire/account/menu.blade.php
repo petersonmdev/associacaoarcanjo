@@ -12,7 +12,7 @@
     </li>
     <li class="nav-item">
       <a class="nav-link @if(Route::currentRouteName() === 'account-login-user') active @endif" href="{{ route('account-login-user', ['id' => Auth::user()->id]) }}">
-        <i class='bx bx-history me-1'></i> {{ __('Historico de atividades') }}
+        <i class='bx bx-desktop me-1'></i> {{ __('Dispositivos conectados') }}
       </a>
     </li>
   </ul>
