@@ -78,7 +78,11 @@ class AccountController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+      $user = UserRepository::find($id);
+      return view('app.account.update', [
+        'id' => $id,
+        'user' => $user
+      ]);
     }
 
     /**

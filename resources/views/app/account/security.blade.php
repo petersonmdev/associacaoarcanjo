@@ -7,7 +7,7 @@
 
   <div class="row">
     <div class="col-md-12">
-      <livewire:account.menu />
+      <livewire:account.menu/>
     </div>
   </div>
 
@@ -17,31 +17,34 @@
         <h4 class="card-header text-primary fw-bold py-3 my-4">{{ __('Alterar minha senha') }}</h4>
         <div class="card-widget-separator-wrapper">
           <div class="card-body card-widget-separator">
-            {{ __('Em desenvolvimento') }}
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+            <form id="formChangePassword" method="POST" onsubmit="return false" class="fv-plugins-bootstrap5 fv-plugins-framework" novalidate="novalidate">
+              <div class="alert alert-warning alert-dismissible" role="alert">
+                <h6 class="alert-heading fw-bold mb-1">{{ __('Garantir que estes requisitos sejam cumpridos') }}</h6>
+                <span>{{ __('Mínimo de 8 caracteres, letras maiúsculas e símbolo') }}</span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              </div>
+              <div class="row gx-6">
+                <div class="mb-4 col-12 col-sm-6 form-password-toggle fv-plugins-icon-container">
+                  <label class="form-label" for="newPassword">{{ __('Nova senha') }}</label>
+                  <div class="input-group input-group-merge has-validation">
+                    <input class="form-control" type="password" id="newPassword" name="newPassword" placeholder="············">
+                    <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
+                  </div><div class="fv-plugins-message-container fv-plugins-message-container--enabled invalid-feedback"></div>
+                </div>
 
-  <div class="row">
-    <div class="col-12">
-      <div class="card mb-4">
-        <h5 class="card-header">{{ __('Apagar Conta') }}</h5>
-        <div class="card-body">
-          <div class="mb-3 col-12 mb-0">
-            <div class="alert alert-warning">
-              <h6 class="alert-heading fw-bold mb-1">{{ __('Tem certeza de que deseja excluir sua conta?') }}</h6>
-              <p class="mb-0">{{ __('Depois que você excluir sua conta, não há como voltar atrás. Por favor, certifique-se.') }}</p>
-            </div>
+                <div class="mb-4 col-12 col-sm-6 form-password-toggle fv-plugins-icon-container">
+                  <label class="form-label" for="confirmPassword">{{ __('Confirme a nova senha') }}</label>
+                  <div class="input-group input-group-merge has-validation">
+                    <input class="form-control" type="password" name="confirmPassword" id="confirmPassword" placeholder="············">
+                    <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
+                  </div><div class="fv-plugins-message-container fv-plugins-message-container--enabled invalid-feedback"></div>
+                </div>
+                <div>
+                  <button type="submit" class="btn btn-primary me-2">{{ __('Alterar senha') }}</button>
+                </div>
+              </div>
+              <input type="hidden"></form>
           </div>
-          <form id="formAccountDeactivation" onsubmit="return false">
-            <div class="form-check mb-3">
-              <input class="form-check-input" type="checkbox" name="accountActivation" id="accountActivation"/>
-              <label class="form-check-label" for="accountActivation">{{ __('Confirmo a desativação da minha conta') }}</label>
-            </div>
-            <button type="submit" class="btn btn-danger deactivate-account">{{ __('Desativar conta') }}</button>
-          </form>
         </div>
       </div>
     </div>

@@ -46,22 +46,24 @@ $navbarDetached = ($navbarDetached ?? '');
           <li class="nav-item navbar-dropdown dropdown-user dropdown">
             <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
               <div class="avatar">
-                <img src="{{ (Auth::user()->profile_photo_path) ? asset('uploads/'.Auth::user()->profile_photo_path) : asset('assets/img/avatars/avatar-default.png')}}" alt class="w-px-40 h-auto rounded-circle"/>
+                <img src="{{ (Auth::user()->profile_photo_path) ? asset(Auth::user()->profile_photo_path) : asset('assets/img/avatars/avatar-default.png')}}" alt class="w-px-40 h-auto rounded-circle"/>
               </div>
             </a>
             <ul class="dropdown-menu dropdown-menu-end">
               <li>
-                <div class="d-flex p-2">
-                  <div class="flex-shrink-0 me-3">
-                    <div class="avatar">
-                      <img src="{{ (Auth::user()->profile_photo_path) ? asset('uploads/'.Auth::user()->profile_photo_path) : asset('assets/img/avatars/avatar-default.png')}}" alt class="w-px-40 h-auto rounded-circle"/>
+                <a class="dropdown-item" href="{{ route('account-user', ['id' => Auth::user()->id]) }}">
+                  <div class="d-flex">
+                    <div class="flex-shrink-0 me-3">
+                      <div class="avatar">
+                        <img src="{{ (Auth::user()->profile_photo_path) ? asset(Auth::user()->profile_photo_path) : asset('assets/img/avatars/avatar-default.png')}}" alt class="w-px-40 h-auto rounded-circle"/>
+                      </div>
+                    </div>
+                    <div class="flex-grow-1">
+                      <span class="fw-medium d-block">{{ (Auth::user()) ? Auth::user()->name : ''}}</span>
+                      <small class="text-muted">Admin</small>
                     </div>
                   </div>
-                  <div class="flex-grow-1">
-                    <span class="fw-medium d-block">{{ (Auth::user()) ? Auth::user()->name : ''}}</span>
-                    <small class="text-muted">Admin</small>
-                  </div>
-                </div>
+                </a>
               </li>
               <li>
                 <div class="dropdown-divider"></div>
