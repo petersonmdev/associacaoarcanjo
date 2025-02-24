@@ -45,17 +45,17 @@ $navbarDetached = ($navbarDetached ?? '');
           <!-- User -->
           <li class="nav-item navbar-dropdown dropdown-user dropdown">
             <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
-              <div class="avatar avatar-online">
-                <img src="{{ asset('assets/img/avatars/1.png') }}" alt class="w-px-40 h-auto rounded-circle">
+              <div class="avatar">
+                <img src="{{ (Auth::user()->profile_photo_path) ? asset(Auth::user()->profile_photo_path) : asset('assets/img/avatars/avatar-default.png')}}" alt class="w-px-40 h-auto rounded-circle"/>
               </div>
             </a>
             <ul class="dropdown-menu dropdown-menu-end">
               <li>
-                <a class="dropdown-item" href="javascript:void(0);">
+                <a class="dropdown-item" href="{{ route('account-user', ['id' => Auth::user()->id]) }}">
                   <div class="d-flex">
                     <div class="flex-shrink-0 me-3">
-                      <div class="avatar avatar-online">
-                        <img src="{{ asset('assets/img/avatars/1.png') }}" alt class="w-px-40 h-auto rounded-circle">
+                      <div class="avatar">
+                        <img src="{{ (Auth::user()->profile_photo_path) ? asset(Auth::user()->profile_photo_path) : asset('assets/img/avatars/avatar-default.png')}}" alt class="w-px-40 h-auto rounded-circle"/>
                       </div>
                     </div>
                     <div class="flex-grow-1">
@@ -69,15 +69,15 @@ $navbarDetached = ($navbarDetached ?? '');
                 <div class="dropdown-divider"></div>
               </li>
               <li>
-                <a class="dropdown-item" href="{{ route('pages-account-settings-account') }}">
+                <a class="dropdown-item" href="{{ route('account-user', ['id' => Auth::user()->id]) }}">
                   <i class="bx bx-user me-2"></i>
                   <span class="align-middle">Minha conta</span>
                 </a>
               </li>
               <li>
-                <a class="dropdown-item" href="javascript:void(0);">
+                <a class="dropdown-item" href="{{ route('configuration-user', ['id' => Auth::user()->id]) }}">
                   <i class='bx bx-cog me-2'></i>
-                  <span class="align-middle">Configurações de sistema</span>
+                  <span class="align-middle">Configurações</span>
                 </a>
               </li>
               <li>

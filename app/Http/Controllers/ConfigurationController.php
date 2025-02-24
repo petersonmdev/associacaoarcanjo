@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Repositories\UserRepository;
 use Illuminate\Http\Request;
 
-class AccountController extends Controller
+class ConfigurationController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -26,13 +26,9 @@ class AccountController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request, $id)
+    public function store(Request $request)
     {
-      $user = UserRepository::find($id);
-      return view('app.account.index', [
-        'id' => $id,
-        'user' => $user
-      ]);
+        //
     }
 
     /**
@@ -41,25 +37,7 @@ class AccountController extends Controller
     public function show(string $id)
     {
       $user = UserRepository::find($id);
-      return view('app.account.index', [
-        'id' => $id,
-        'user' => $user
-      ]);
-    }
-
-    public function showSecurity(string $id)
-    {
-      $user = UserRepository::find($id);
-      return view('app.account.security', [
-        'id' => $id,
-        'user' => $user
-      ]);
-    }
-
-    public function showLoginHistory(string $id)
-    {
-      $user = UserRepository::find($id);
-      return view('app.account.connected-device', [
+      return view('app.configuration.index', [
         'id' => $id,
         'user' => $user
       ]);
@@ -78,11 +56,7 @@ class AccountController extends Controller
      */
     public function update(Request $request, string $id)
     {
-      $user = UserRepository::find($id);
-      return view('app.account.update', [
-        'id' => $id,
-        'user' => $user
-      ]);
+        //
     }
 
     /**

@@ -299,7 +299,7 @@ class UpdateAssisted extends Component
     }
   }
 
-  public function submitForm()
+  public function submitFormUser()
   {
     $this->validate();
 
