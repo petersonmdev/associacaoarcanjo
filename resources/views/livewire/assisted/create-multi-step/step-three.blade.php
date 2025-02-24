@@ -1,7 +1,7 @@
 <div>
   <div class="row setup-content" id="step-3">
     <div class="col-12 title-step mb-3">
-      <h4 class="m-0 text-primary">Endereço</h4>
+      <h4 class="m-0 text-primary"><span class="tf-icons bx bx-location-plus fs-3"></span>&nbsp;Endereço</h4>
       <p>Informe o endereço</p>
     </div>
     <div class="col-12">
@@ -51,6 +51,8 @@
         </div>
       </div>
     </div>
+
+    <hr class="mt-3">
 
     <div class="my-4">
       <div class="col-12">

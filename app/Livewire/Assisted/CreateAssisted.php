@@ -29,16 +29,27 @@ class CreateAssisted extends Component
     'assisted.create-multi-step.step-seven',
   ];
 
-  protected $listeners = ['stepValidated'=> 'stepValidated'];
+  protected $listeners = [
+    'stepValidated'=> 'handleStepValidated',
+    'goToPreviousStep'=> 'handleGoToPreviousStep'
+  ];
   public function lastStep() {
     $index = array_key_last($this->steps);
     return $this->steps[$index];
   }
 
-  public function stepValidated($payload)
+  public function handleStepValidated($payload)
   {
     $this->formData = array_merge($this->formData, $payload['data']);
     $this->save();
+  }
+
+  public function handleGoToPreviousStep()
+  {
+    $currentIndex = array_search($this->current, $this->steps);
+    if (isset($this->steps[$currentIndex - 1])) {
+      $this->current = $this->steps[$currentIndex - 1];
+    }
   }
 
   public function save(): void
