@@ -9,8 +9,8 @@ use Livewire\Component;
 
 class StepFour extends Component
 {
-  public bool $no_dependents = false;
   public array $data = [
+    'no_dependents' => false,
     'dependents' => [
       [
         'dependent_name' => '',
@@ -24,11 +24,11 @@ class StepFour extends Component
   ];
 
   #[Validate([
-    'data.dependents.*.dependent_name' => 'required_if:no_dependents,false|string|max:100',
-    'data.dependents.*.dependent_dob' => ['required_if:no_dependents,false', 'regex:/^(19|20)\d{2}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$/'],
-    'data.dependents.*.dependent_parentage' => 'required_if:no_dependents,false|string|max:100',
+    'data.dependents.*.dependent_name' => 'required_if:data.no_dependents,false|string|max:100',
+    'data.dependents.*.dependent_dob' => ['required_if:data.no_dependents,false', 'regex:/^(19|20)\d{2}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$/'],
+    'data.dependents.*.dependent_parentage' => 'required_if:data.no_dependents,false|string|max:100',
     'data.dependents.*.dependent_occupation' => 'string|max:100',
-    'data.dependents.*.dependent_sex' => 'required_if:no_dependents,false|string|max:100',
+    'data.dependents.*.dependent_sex' => 'required_if:data.no_dependents,false|string|max:100',
   ], message: [
     'data.dependents.*.dependent_name.required_if' => 'Campo obrigatório.',
     'data.dependents.*.dependent_name.max' => 'Tamanho máximo do campo excedido.',
@@ -47,6 +47,11 @@ class StepFour extends Component
     $this->dispatch('stepValidated', ['data' => $this->data]);
   }
 
+  public function back()
+  {
+    $this->dispatch('goToPreviousStep');
+  }
+
   public function render()
   {
     return view('livewire.assisted.create-multi-step.step-four', [
@@ -57,13 +62,12 @@ class StepFour extends Component
 
   public function noDependents()
   {
-    if (array_values($this->data['dependents'])){
-      foreach ($this->data['dependents'] as $index => $dependent) {
-        unset($this->data['dependents'][$index]);
-      }
-      $this->data['dependents'] = array_values($this->data['dependents']);
+    if ($this->data['no_dependents']) {
+      $this->data['dependents'] = [];
     } else {
-      $this->addDependent();
+      if (!isset($this->data['dependents'])) {
+        $this->data['dependents'] = [];
+      }
     }
   }
 
@@ -77,6 +81,7 @@ class StepFour extends Component
       'dependent_occupation' => '',
       'dependent_pne' => false
     ];
+    $this->data['no_dependents'] = false;
   }
 
   public function removeDependent($index)

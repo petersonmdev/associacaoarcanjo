@@ -1,7 +1,7 @@
 <div>
   <div class="row setup-content" id="step-2">
     <div class="col-12 title-step mb-3">
-      <h4 class="m-0 text-primary">Telefones para contato</h4>
+      <h4 class="m-0 text-primary"><span class="tf-icons bx bx-phone-call fs-3"></span>&nbsp;Telefones para contato</h4>
       <p>Informe formas para contato</p>
     </div>
 
@@ -24,6 +24,8 @@
         </div>
       </div>
     </div>
+
+    <hr class="mt-3">
 
     <div class="my-4">
       <div class="col-12">

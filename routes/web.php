@@ -112,13 +112,6 @@ Route::get('/', [App\Http\Controllers\HomeController::class, 'index']);
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
-// assisted
-Route::get('/assisted/list', [App\Http\Controllers\AssistedController::class, 'index'])->name('assisted-list');
-Route::get('/assisted/new', [App\Http\Controllers\AssistedController::class, 'store'])->name('assisted-store');
-Route::get('/assisted/edit/{id}', [App\Http\Controllers\AssistedController::class, 'update'])->name('assisted-update');
-Route::get('/assisted/show/{id}', [App\Http\Controllers\AssistedController::class, 'show'])->name('assisted-show');
-Route::get('/assisted/show/pdf/{id}', [App\Http\Controllers\AssistedController::class, 'showPdf'])->name('assisted-show-pdf');
-
 // voluntary
 Route::get('/voluntary/list', [App\Http\Controllers\VoluntaryController::class, 'index'])->name('voluntary-list');
 Route::get('/voluntary/new', [App\Http\Controllers\VoluntaryController::class, 'store'])->name('voluntary-new');
@@ -140,6 +133,31 @@ Route::get('/user/role', [App\Http\Controllers\UserController::class, 'indexRole
 // reports
 Route::get('/report/assisted', [App\Http\Controllers\ReportAssistedController::class, 'index'])->name('report-assisted');
 Route::get('/report/voluntary', [App\Http\Controllers\ReportVoluntaryController::class, 'index'])->name('report-voluntary');
+
+Route::middleware(['auth'])->group(function () {
+  // assisted
+  Route::get('/assisted/list', [App\Http\Controllers\AssistedController::class, 'index'])->name('assisted-list');
+  Route::get('/assisted/new', [App\Http\Controllers\AssistedController::class, 'store'])->name('assisted-store');
+  Route::get('/assisted/edit/{id}', [App\Http\Controllers\AssistedController::class, 'update'])->name('assisted-update');
+  Route::get('/assisted/show/{id}', [App\Http\Controllers\AssistedController::class, 'show'])->name('assisted-show');
+  Route::get('/assisted/show/pdf/{id}', [App\Http\Controllers\AssistedController::class, 'showPdf'])->name('assisted-show-pdf');
+
+  // voluntary
+  Route::get('/voluntary/list', [App\Http\Controllers\VoluntaryController::class, 'index'])->name('voluntary-list');
+  Route::get('/voluntary/new', [App\Http\Controllers\VoluntaryController::class, 'store'])->name('voluntary-new');
+  Route::get('/voluntary/assisted-with-voluntary', [App\Http\Controllers\VoluntaryController::class, 'bindAssisted'])->name('assisted-with-voluntary');
+  Route::get('/voluntary/scripting', [App\Http\Controllers\VoluntaryController::class, 'indexScripting'])->name('voluntary-scripting');
+
+  // Account
+  Route::get('/account/{id}', [App\Http\Controllers\AccountController::class, 'show'])->name('account-user');
+  Route::get('/account/edit/{id}', [App\Http\Controllers\AccountController::class, 'update'])->name('account-user-update');
+  Route::get('/account/security/{id}', [App\Http\Controllers\AccountController::class, 'showSecurity'])->name('account-security-user');
+  Route::get('/account/connected-device/{id}', [App\Http\Controllers\AccountController::class, 'showLoginHistory'])->name('account-login-user');
+
+  // Configuration
+  Route::get('/configuration/{id}', [App\Http\Controllers\ConfigurationController::class, 'show'])->name('configuration-user');
+});
+
 
 Route::middleware([
     'auth:sanctum',

@@ -53,4 +53,22 @@ window.addEventListener('livewire:initialized', (event) => {
       firstInvalidElement.focus();
     }
   });
+
+  Livewire.on('close-modal', (data) => {
+    const modalId = data.modalId;
+    const modal = bootstrap.Modal.getInstance(document.getElementById(modalId));
+
+    if (modal) {
+      modal.hide();
+    }
+  });
+});
+
+window.addEventListener('close-modal', event => {
+  const modalId = event.detail.modalId;
+  const modal = bootstrap.Modal.getInstance(document.getElementById(modalId));
+
+  if (modal) {
+    modal.hide();
+  }
 });

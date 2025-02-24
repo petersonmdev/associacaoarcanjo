@@ -2,7 +2,7 @@
   <div class="row mb-3">
     <div class="col-md-12 my-2">
       <div class="d-flex justify-content-between align-items-center mb-4">
-        <h4 class="m-0 text-primary"><span class="tf-icons bx bx-info-circle fs-2"></span>&nbsp; Dados pessoais</h4>
+        <h4 class="m-0 text-primary"><span class="tf-icons bx bx-info-circle fs-2"></span>&nbsp;Dados pessoais</h4>
       </div>
     </div>
     <div class="col-12">
@@ -80,7 +80,7 @@
 
     <div class="col-md-12 my-2">
       <div class="d-flex justify-content-between align-items-center mb-4">
-        <h4 class="m-0 text-primary"><span class="tf-icons bx bx-phone-call fs-2"></span>&nbsp; Telefones para contato</h4>
+        <h4 class="m-0 text-primary"><span class="tf-icons bx bx-phone-call fs-2"></span>&nbsp;Telefones para contato</h4>
       </div>
     </div>
     <div class="col-12">
@@ -107,7 +107,7 @@
 
     <div class="col-md-12 my-2">
       <div class="d-flex justify-content-between align-items-center mb-4">
-        <h4 class="m-0 text-primary"><span class="tf-icons bx bx-location-plus fs-2"></span>&nbsp; Endereço</h4>
+        <h4 class="m-0 text-primary"><span class="tf-icons bx bx-location-plus fs-2"></span>&nbsp;Endereço</h4>
       </div>
     </div>
     <div class="col-12">
@@ -162,7 +162,7 @@
 
     <div class="col-md-12 my-2">
       <div class="d-flex justify-content-between align-items-center mb-4">
-        <h4 class="m-0 text-primary"><span class="tf-icons bx bx-user-plus fs-2"></span>&nbsp; Composição familiar</h4>
+        <h4 class="m-0 text-primary"><span class="tf-icons bx bx-user-plus fs-2"></span>&nbsp;Composição familiar</h4>
       </div>
     </div>
     <div class="col-12 mb-4">
@@ -241,7 +241,7 @@
 
     <div class="col-md-12 my-2">
       <div class="d-flex justify-content-between align-items-center mb-4">
-        <h4 class="m-0 text-primary"><span class="tf-icons bx bx-money fs-2"></span>&nbsp; Renda familiar</h4>
+        <h4 class="m-0 text-primary"><span class="tf-icons bx bx-money fs-2"></span>&nbsp;Renda familiar</h4>
       </div>
     </div>
     <form class="form-repeater-incomes">
@@ -289,7 +289,7 @@
 
     <div class="col-md-12 my-2">
       <div class="d-flex justify-content-between align-items-center mb-4">
-        <h4 class="m-0 text-primary"><span class="tf-icons bx bx-message-square-dots fs-2"></span>&nbsp; Saúde familiar e social</h4>
+        <h4 class="m-0 text-primary"><span class="tf-icons bx bx-message-square-dots fs-2"></span> Saúde familiar e social</h4>
       </div>
     </div>
     <div class="col-12">
@@ -342,7 +342,7 @@
 
     <div class="col-md-12 my-2">
       <div class="d-flex justify-content-between align-items-center mb-4">
-        <h4 class="m-0 text-primary"><span class="tf-icons bx bxs-face fs-2"></span>&nbsp; Voluntário responsável</h4>
+        <h4 class="m-0 text-primary"><span class="tf-icons bx bxs-face fs-2"></span>&nbsp;Voluntário responsável</h4>
       </div>
     </div>
     <div class="col-12 mb-4">

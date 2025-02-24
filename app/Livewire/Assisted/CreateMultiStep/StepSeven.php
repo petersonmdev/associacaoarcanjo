@@ -20,10 +20,20 @@ class StepSeven extends Component
     'data.voluntary_id.exists' => 'Voluntário inválido.',
   ])]
 
+  public function mount($data)
+  {
+    $this->data = $data;
+  }
+
   public function validateStep()
   {
     $this->validate();
     $this->dispatch('stepValidated', ['data' => $this->data]);
+  }
+
+  public function back()
+  {
+    $this->dispatch('goToPreviousStep');
   }
 
   public function render()

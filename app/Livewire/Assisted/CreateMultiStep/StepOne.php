@@ -35,6 +35,11 @@ class StepOne extends Component
     'data.*.email' => 'E-mail inválido.',
   ])]
 
+  public function mount($data)
+  {
+    $this->data = $data;
+  }
+
   public function validateStep()
   {
     $this->validate();

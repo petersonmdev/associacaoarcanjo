@@ -7,8 +7,8 @@ use Livewire\Component;
 
 class StepFive extends Component
 {
-  public bool $no_incomes = false;
   public array $data = [
+    'no_incomes' => false,
     'incomes' => [
       [
         'name' => '',
@@ -18,8 +18,8 @@ class StepFive extends Component
   ];
 
   #[Validate([
-    'data.incomes.*.name' => 'required_if:no_incomes,false|string|max:100',
-    'data.incomes.*.value' => 'required_if:no_incomes,false|numeric|min:1',
+    'data.incomes.*.name' => 'required_if:data.no_incomes,false|string|max:100',
+    'data.incomes.*.value' => 'required_if:data.no_incomes,false|numeric|min:1',
   ], message: [
     'data.incomes.*.name.required_if' => 'Campo obrigatório.',
     'data.incomes.*.name.max' => 'Tamanho máximo do campo excedido.',
@@ -33,6 +33,11 @@ class StepFive extends Component
     $this->dispatch('stepValidated', ['data' => $this->data]);
   }
 
+  public function back()
+  {
+    $this->dispatch('goToPreviousStep');
+  }
+
   public function render()
   {
     return view('livewire.assisted.create-multi-step.step-five');
@@ -40,13 +45,12 @@ class StepFive extends Component
 
   public function noIncomes()
   {
-    if (array_values($this->data['incomes'])){
-      foreach ($this->data['incomes'] as $index => $income) {
-        unset($this->data['incomes'][$index]);
-      }
-      $this->data['incomes'] = array_values($this->data['incomes']);
+    if ($this->data['no_incomes']) {
+      $this->data['incomes'] = [];
     } else {
-      $this->addIncome();
+      if (!isset($this->data['incomes'])) {
+        $this->data['incomes'] = [];
+      }
     }
   }
 
@@ -56,6 +60,7 @@ class StepFive extends Component
       'name' => '',
       'value' => ''
     ];
+    $this->data['no_incomes'] = false;
   }
 
   public function removeIncome($index)
