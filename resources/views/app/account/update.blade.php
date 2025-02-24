@@ -7,7 +7,7 @@
 @endsection
 
 @section('content')
-  <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">{{ __('Configurações da minha conta') }} / </span>{{ __('Editar dados') }}</h4>
+  <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">{{ __('Minha conta') }} / </span>{{ __('Editar dados') }}</h4>
 
   <div class="row">
     <div class="col-md-12">
@@ -16,7 +16,7 @@
           @if ($user)
             <livewire:account.update-account :userId="$id" :user="$user" lazy="on-load" />
           @else
-            <p class="text-center mt-3">Nenhum registro de cadastro com o id <span class="fw-medium">{{ '#'.sprintf('%04d', $id) }}</span> foi encontrado!</p>
+            <p class="text-center mt-3">{{ __('Nenhum registro de cadastro com o id') }} <span class="fw-medium">{{ '#'.sprintf('%04d', $id) }}</span> {{ __('foi encontrado!') }}</p>
           @endif
         </div>
       </div>

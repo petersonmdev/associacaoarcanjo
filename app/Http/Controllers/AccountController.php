@@ -59,7 +59,7 @@ class AccountController extends Controller
     public function showLoginHistory(string $id)
     {
       $user = UserRepository::find($id);
-      return view('app.account.login-history', [
+      return view('app.account.connected-device', [
         'id' => $id,
         'user' => $user
       ]);

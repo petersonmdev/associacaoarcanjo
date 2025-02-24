@@ -152,7 +152,7 @@ Route::middleware(['auth'])->group(function () {
   Route::get('/account/{id}', [App\Http\Controllers\AccountController::class, 'show'])->name('account-user');
   Route::get('/account/edit/{id}', [App\Http\Controllers\AccountController::class, 'update'])->name('account-user-update');
   Route::get('/account/security/{id}', [App\Http\Controllers\AccountController::class, 'showSecurity'])->name('account-security-user');
-  Route::get('/account/login-history/{id}', [App\Http\Controllers\AccountController::class, 'showLoginHistory'])->name('account-login-user');
+  Route::get('/account/connected-device/{id}', [App\Http\Controllers\AccountController::class, 'showLoginHistory'])->name('account-login-user');
 
   // Configuration
   Route::get('/configuration/{id}', [App\Http\Controllers\ConfigurationController::class, 'show'])->name('configuration-user');

@@ -7,7 +7,7 @@
     </li>
     <li class="nav-item">
       <a class="nav-link @if(Route::currentRouteName() === 'account-security-user') active @endif" href="{{ route('account-security-user', ['id' => Auth::user()->id]) }}">
-        <i class="bx bx-bell me-1"></i> {{ __('Segurança') }}
+        <i class="bx bx-lock me-1"></i> {{ __('Segurança') }}
       </a>
     </li>
     <li class="nav-item">
