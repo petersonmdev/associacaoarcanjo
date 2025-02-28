@@ -1,4 +1,33 @@
 <div x-data>
+  @livewireStyles
+  <style>
+    .tooltip {
+      position: absolute;
+      z-index: 9999;
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .tooltip-arrow {
+      position: absolute;
+      width: 0;
+      height: 0;
+      border-style: solid;
+      border-width: 5px 5px 0 5px;
+      border-color: #222 transparent transparent transparent;
+      bottom: -5px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .tooltip-inner {
+      background-color: #222;
+      color: #fff;
+      padding: 5px 10px;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+  </style>
   <div class="mb-4 d-flex">
     <div class="d-none d-md-block col-md-4">
       <div class="row">
@@ -68,7 +97,28 @@
             </a>
           </td>
           <td>
-            <ul class="list-unstyled users-list m-0 avatar-group d-flex align-items-center">
+
+            <div class="col" x-data="{tooltip:false}">
+              <button
+                type="button"
+                class="btn btn-primary"
+                x-on:mouseenter="tooltip=true"
+                x-on:mouseleave="tooltip=false">
+                Top
+              </button>
+
+              <!-- Tooltip -->
+              <div x-show="tooltip" x-cloak>
+                <div class="tooltip bs-tooltip-top" role="tooltip">
+                  <div class="tooltip-arrow"></div>
+                  <div class="tooltip-inner">
+                    <i class='bx bx-bell bx-xs'></i> <span>Tooltip on top</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+              <ul class="list-unstyled users-list m-0 avatar-group d-flex align-items-center">
               @if ($item->dependents_info)
                 @foreach(json_decode($item->dependents_info) as $dependent)
                   <li data-bs-toggle="tooltip"
@@ -76,10 +126,10 @@
                       data-bs-placement="top"
                       class="avatar avatar-xs pull-up text-body"
                       data-bs-html="true"
-                      title="<span>{{ $dependent->name }}</span><small class='fw-light d-block'>{{ (int)date_diff(date_create($dependent->dob),date_create('today'))->y . " anos de idade" }}</small>"
-                      aria-label="<span>{{ $dependent->name }}</span><small class='fw-light d-block'>{{ (int)date_diff(date_create($dependent->dob),date_create('today'))->y . " anos de idade" }}</small>"
-                      data-bs-original-title="<span>{{ $dependent->name }}</span><small class='fw-light d-block'>{{ (int)date_diff(date_create($dependent->dob),date_create('today'))->y . " anos de idade" }}</small>">
-                    <span class="bx bx-male dependent-{{$dependent->sex==='masculino' ? 'male' : 'female'}} dependent-icon"></span>
+                      title='<span>{{ $dependent->name .'-'. $dependent->sex}}</span><small class="fw-light d-block">{{ (int)date_diff(date_create($dependent->dob),date_create("today"))->y . " anos de idade" }}</small>'
+                      aria-label='<span>{{ $dependent->name .'-'. $dependent->sex}}</span><small class="fw-light d-block">{{ (int)date_diff(date_create($dependent->dob),date_create("today"))->y . " anos de idade" }}</small>'
+                      data-bs-original-title='<span>{{ $dependent->name .'-'. $dependent->sex}}</span><small class="fw-light d-block">{{ (int)date_diff(date_create($dependent->dob),date_create("today"))->y . " anos de idade" }}</small>'>
+                    <span class="bx bx-xs bx-male dependent-{{$dependent->sex === 'MASCULINO' ? 'male' : 'female'}} dependent-icon"></span>
                   </li>
                 @endforeach
                   <?php
@@ -185,3 +235,25 @@
     </div>
   </div>
 </div>
+
+@livewireScripts
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+
+<!-- Script para inicializar tooltips -->
+<script>
+  document.addEventListener('livewire:load', function () {
+    console.log('testeeee')
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+      return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+  });
+
+  document.addEventListener('livewire:update', function () {
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+      return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+  });
+</script>

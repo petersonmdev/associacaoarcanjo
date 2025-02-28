@@ -53,15 +53,6 @@ window.addEventListener('livewire:initialized', (event) => {
       firstInvalidElement.focus();
     }
   });
-
-  Livewire.on('close-modal', (data) => {
-    const modalId = data.modalId;
-    const modal = bootstrap.Modal.getInstance(document.getElementById(modalId));
-
-    if (modal) {
-      modal.hide();
-    }
-  });
 });
 
 window.addEventListener('close-modal', event => {
@@ -71,4 +62,18 @@ window.addEventListener('close-modal', event => {
   if (modal) {
     modal.hide();
   }
+});
+
+document.addEventListener('livewire:load', function () {
+  var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+  var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+    return new bootstrap.Tooltip(tooltipTriggerEl);
+  });
+});
+
+document.addEventListener('livewire:update', function () {
+  var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+  var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+    return new bootstrap.Tooltip(tooltipTriggerEl);
+  });
 });

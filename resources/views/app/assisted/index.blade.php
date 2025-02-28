@@ -2,6 +2,10 @@
 
 @section('title', 'Lista de famílias assistidas')
 
+@section('page-script')
+  <script src="{{asset('assets/js/ui-popover.js')}}"></script>
+@endsection
+
 @section('content')
 <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Assistidos /</span> Todos os assistidos</h4>
 
