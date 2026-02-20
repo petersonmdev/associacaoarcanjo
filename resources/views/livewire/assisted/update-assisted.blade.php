@@ -21,7 +21,7 @@
           <label for="statusAssisted" class="form-label">Status</label>
           <select class="form-select @error('active') is-invalid @enderror" id="statusAssisted" wire:model="active" aria-label="status">
             @foreach ($statuses as $status)
-              <option value="{{ $status->value }}" {{ $status->value == '1' ? "checked" : "" }}>{{ $status->label() }}</option>
+              <option value="{{ $status->value }}">{{ $status->label() }}</option>
             @endforeach
           </select>
           @error('active') <span class="d-block invalid-feedback">{{ $message }}</span> @enderror
@@ -360,7 +360,7 @@
     <div class="row mt-3">
       <div class="col-md">
         <a class="btn btn-outline-secondary" href="{{url()->previous()}}">Voltar</a>
-        <button class="btn btn-success float-end" type="submit" wire:click="submitForm()" >Salvar</button>
+        <button class="btn btn-success float-end" type="submit" wire:click="submitFormUser()" >Salvar</button>
       </div>
     </div>
   </div>

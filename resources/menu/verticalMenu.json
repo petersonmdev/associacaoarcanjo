@@ -31,168 +31,48 @@
       "icon": "menu-icon tf-icons bx bxs-face",
       "slug": "voluntaries",
       "badge": [
-        "label-danger fs-tiny",
-        "BkLg"
+        "label-info fs-tiny",
+        "Novo"
       ],
       "submenu": [
         {
           "url": "voluntary/list",
           "name": "Todos voluntários",
-          "slug": "voluntary-list",
-          "badge": [
-            "label-danger fs-tiny",
-            "BkLg"
-          ]
+          "slug": "voluntary-list"
         },
         {
           "url": "voluntary/new",
           "name": "Cadastrar novo",
-          "slug": "voluntary-new",
-          "badge": [
-            "label-danger fs-tiny",
-            "BkLg"
-          ]
+          "slug": "voluntary-new"
         },
         {
           "url": "donated/voluntary",
           "name": "Confiar doações",
-          "slug": "donated-bind-voluntary",
-          "badge": [
-            "label-danger fs-tiny",
-            "BkLg"
-          ]
+          "slug": "donated-bind-voluntary"
         }
-      ]
-    },
-    {
-      "url": "voluntary/assisted-with-voluntary",
-      "name": "Vincular assistidos",
-      "icon": "menu-icon tf-icons bx bx-donate-heart",
-      "slug": "assisted-with-voluntary",
-      "badge": [
-        "label-danger fs-tiny",
-        "BkLg"
-      ]
-    },
-    {
-      "url": "voluntary/scripting",
-      "name": "Roterização",
-      "icon": "menu-icon tf-icons bx bxs-map-alt",
-      "slug": "voluntary-scripting",
-      "badge": [
-        "label-danger fs-tiny",
-        "BkLg"
-      ]
-    },
-    {
-      "url": "donated/voluntary/history",
-      "name": "Entregas",
-      "icon": "menu-icon tf-icons bx bx-list-ul",
-      "slug": "donated-voluntary-history",
-      "badge": [
-        "label-danger fs-tiny",
-        "BkLg"
-      ]
-    },
-    {
-      "menuHeader": "Doações"
-    },
-    {
-      "url": "donated/food-parcel",
-      "name": "Cestas",
-      "icon": "menu-icon tf-icons bx bx-basket",
-      "slug": "donated-food-parcel",
-      "badge": [
-        "label-danger fs-tiny",
-        "BkLg"
-      ]
-    },
-    {
-      "url": "donated/bazaar",
-      "name": "Bazar ARCcanjo",
-      "icon": "menu-icon tf-icons bx bx-closet",
-      "slug": "donated-bazaar",
-      "badge": [
-        "label-danger fs-tiny",
-        "BkLg"
       ]
     },
     {
       "menuHeader": "Sistema ARCanjo"
     },
     {
-      "name": "Usuários",
-      "icon": "menu-icon tf-icons bx bx-user",
-      "slug": "users",
-      "badge": [
-        "label-danger fs-tiny",
-        "BkLg"
-      ],
-      "submenu": [
-        {
-          "url": "user/list",
-          "name": "Todos usuários",
-          "slug": "user-list",
-          "badge": [
-            "label-danger fs-tiny",
-            "BkLg"
-          ]
-        },
-        {
-          "url": "user/new",
-          "name": "Cadastrar novo",
-          "slug": "user-new",
-          "badge": [
-            "label-danger fs-tiny",
-            "BkLg"
-          ]
-        },
-        {
-          "url": "user/office",
-          "name": "Cadastrar cargos",
-          "slug": "user-office",
-          "badge": [
-            "label-danger fs-tiny",
-            "BkLg"
-          ]
-        },
-        {
-          "url": "user/role",
-          "name": "Permissões",
-          "slug": "user-role",
-          "badge": [
-            "label-danger fs-tiny",
-            "BkLg"
-          ]
-        }
-      ]
-    },
-    {
       "name": "Relatórios",
       "icon": "menu-icon tf-icons bx bxs-report",
       "slug": "reports",
       "badge": [
-        "label-danger fs-tiny",
-        "BkLg"
+        "label-info fs-tiny",
+        "Novo"
       ],
       "submenu": [
         {
           "url": "report/assisted",
           "name": "Assistidos",
-          "slug": "report-assisted",
-          "badge": [
-            "label-danger fs-tiny",
-            "BkLg"
-          ]
+          "slug": "report-assisted"
         },
         {
           "url": "report/voluntary",
           "name": "Voluntários",
-          "slug": "report-voluntary",
-          "badge": [
-            "label-danger fs-tiny",
-            "BkLg"
-          ]
+          "slug": "report-voluntary"
         }
       ]
     }

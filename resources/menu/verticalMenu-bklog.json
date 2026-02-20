@@ -1,0 +1,153 @@
+{
+  "menu": [
+    {
+      "url": "/",
+      "name": "Home",
+      "icon": "menu-icon tf-icons bx bx-home-circle",
+      "slug": "dashboard"
+    },
+    {
+      "menuHeader": "Programa de cestas"
+    },
+    {
+      "name": "Assistidos",
+      "icon": "menu-icon tf-icons bx bx-home-heart",
+      "slug": "assisteds",
+      "submenu": [
+        {
+          "url": "assisted/list",
+          "name": "Todos os Assistidos",
+          "slug": "assisted-list"
+        },
+        {
+          "url": "assisted/new",
+          "name": "Cadastrar novo",
+          "slug": "assisted-new"
+        }
+      ]
+    },
+    {
+      "name": "Voluntários",
+      "icon": "menu-icon tf-icons bx bxs-face",
+      "slug": "voluntaries",
+      "badge": [
+        "label-info fs-tiny",
+        "Novo"
+      ],
+      "submenu": [
+        {
+          "url": "voluntary/list",
+          "name": "Todos voluntários",
+          "slug": "voluntary-list",
+          "badge": [
+            "label-danger fs-tiny",
+            "BkLg"
+          ]
+        },
+        {
+          "url": "voluntary/new",
+          "name": "Cadastrar novo",
+          "slug": "voluntary-new",
+          "badge": [
+            "label-danger fs-tiny",
+            "BkLg"
+          ]
+        },
+        {
+          "url": "donated/voluntary",
+          "name": "Confiar doações",
+          "slug": "donated-bind-voluntary",
+          "badge": [
+            "label-danger fs-tiny",
+            "BkLg"
+          ]
+        }
+      ]
+    },
+    {
+      "url": "voluntary/assisted-with-voluntary",
+      "name": "Vincular assistidos",
+      "icon": "menu-icon tf-icons bx bx-donate-heart",
+      "slug": "assisted-with-voluntary",
+      "badge": [
+        "label-danger fs-tiny",
+        "BkLg"
+      ]
+    },
+    {
+      "url": "voluntary/scripting",
+      "name": "Roterização",
+      "icon": "menu-icon tf-icons bx bxs-map-alt",
+      "slug": "voluntary-scripting",
+      "badge": [
+        "label-danger fs-tiny",
+        "BkLg"
+      ]
+    },
+    {
+      "url": "donated/voluntary/history",
+      "name": "Entregas",
+      "icon": "menu-icon tf-icons bx bx-list-ul",
+      "slug": "donated-voluntary-history",
+      "badge": [
+        "label-danger fs-tiny",
+        "BkLg"
+      ]
+    },
+    {
+      "menuHeader": "Doações"
+    },
+    {
+      "url": "donated/food-parcel",
+      "name": "Cestas",
+      "icon": "menu-icon tf-icons bx bx-basket",
+      "slug": "donated-food-parcel",
+      "badge": [
+        "label-danger fs-tiny",
+        "BkLg"
+      ]
+    },
+    {
+      "url": "donated/bazaar",
+      "name": "Bazar ARCcanjo",
+      "icon": "menu-icon tf-icons bx bx-closet",
+      "slug": "donated-bazaar",
+      "badge": [
+        "label-danger fs-tiny",
+        "BkLg"
+      ]
+    },
+    {
+      "menuHeader": "Sistema ARCanjo"
+    },
+    {
+      "name": "Relatórios",
+      "icon": "menu-icon tf-icons bx bxs-report",
+      "slug": "reports",
+      "badge": [
+        "label-danger fs-tiny",
+        "BkLg"
+      ],
+      "submenu": [
+        {
+          "url": "report/assisted",
+          "name": "Assistidos",
+          "slug": "report-assisted",
+          "badge": [
+            "label-danger fs-tiny",
+            "BkLg"
+          ]
+        },
+        {
+          "url": "report/voluntary",
+          "name": "Voluntários",
+          "slug": "report-voluntary",
+          "badge": [
+            "label-danger fs-tiny",
+            "BkLg"
+          ]
+        }
+      ]
+    }
+  ]
+}

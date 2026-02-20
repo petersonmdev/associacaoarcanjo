@@ -5,13 +5,13 @@
       position: absolute;
       z-index: 9999;
       opacity: 1;
+      top: -5px;
+      transform: translateY(calc(-50% - 5px));
       visibility: visible;
     }
 
     .tooltip-arrow {
       position: absolute;
-      width: 0;
-      height: 0;
       border-style: solid;
       border-width: 5px 5px 0 5px;
       border-color: #222 transparent transparent transparent;
@@ -26,6 +26,7 @@
       padding: 5px 10px;
       border-radius: 4px;
       font-size: 14px;
+      margin: 0 auto;
     }
   </style>
   <div class="mb-4 d-flex">
@@ -98,27 +99,54 @@
           </td>
           <td>
 
-            <div class="col" x-data="{tooltip:false}">
-              <button
-                type="button"
-                class="btn btn-primary"
-                x-on:mouseenter="tooltip=true"
-                x-on:mouseleave="tooltip=false">
-                Top
-              </button>
+{{--            <ul class="position-relative list-unstyled users-list m-0 avatar-group d-flex align-items-center" x-data="{tooltip:false}">--}}
+{{--              @if ($item->dependents_info)--}}
+{{--                @foreach(json_decode($item->dependents_info) as $dependent)--}}
+{{--                  <li--}}
+{{--                    class="bg-[#535353]"--}}
+{{--                    x-on:mouseenter="tooltip=true"--}}
+{{--                    x-on:mouseleave="tooltip=false">--}}
+{{--                    <span class="bx bx-xs bx-male dependent-{{$dependent->sex === 'MASCULINO' ? 'male' : 'female'}} dependent-icon"></span>--}}
+{{--                  </li>--}}
+{{--                  <div x-show="tooltip" x-cloak>--}}
+{{--                    <div class="tooltip bs-tooltip-top" role="tooltip">--}}
+{{--                      <div class="tooltip-arrow"></div>--}}
+{{--                      <div class="tooltip-inner">--}}
+{{--                        <span>{{ $dependent->name .'-'. strtolower($dependent->sex)}}</span><small class="fw-light d-block">{{ (int)date_diff(date_create($dependent->dob),date_create("today"))->y . " anos de idade" }}</small>--}}
+{{--                      </div>--}}
+{{--                    </div>--}}
+{{--                  </div>--}}
+{{--                @endforeach--}}
+{{--                  <?php--}}
+{{--                  $array = json_decode($item->dependents_info, true);--}}
+{{--                  $numberOfElements = count($array);--}}
+{{--                  ?>--}}
+{{--                <li><small class="n-dependents">&nbsp;({{ $numberOfElements }})</small></li>--}}
+{{--              @else--}}
+{{--                <li><small class="n-dependents">&nbsp;(Sem dependentes)</small></li>--}}
+{{--              @endif--}}
+{{--            </ul>--}}
 
-              <!-- Tooltip -->
-              <div x-show="tooltip" x-cloak>
-                <div class="tooltip bs-tooltip-top" role="tooltip">
-                  <div class="tooltip-arrow"></div>
-                  <div class="tooltip-inner">
-                    <i class='bx bx-bell bx-xs'></i> <span>Tooltip on top</span>
-                  </div>
-                </div>
-              </div>
-            </div>
 
-              <ul class="list-unstyled users-list m-0 avatar-group d-flex align-items-center">
+{{--            <div class="relative" x-data="{tooltip:false}">--}}
+{{--              <button--}}
+{{--                type="button"--}}
+{{--                class="btn btn-primary"--}}
+{{--                x-on:mouseenter="tooltip=true"--}}
+{{--                x-on:mouseleave="tooltip=false">--}}
+{{--                Top--}}
+{{--              </button>--}}
+{{--              <div x-show="tooltip" x-cloak>--}}
+{{--                <div class="tooltip bs-tooltip-top" role="tooltip">--}}
+{{--                  <div class="tooltip-arrow"></div>--}}
+{{--                  <div class="tooltip-inner">--}}
+{{--                    <i class='bx bx-bell bx-xs'></i> <span>Tooltip on teste</span>--}}
+{{--                  </div>--}}
+{{--                </div>--}}
+{{--              </div>--}}
+{{--            </div>--}}
+
+            <ul class="list-unstyled users-list m-0 avatar-group d-flex align-items-center">
               @if ($item->dependents_info)
                 @foreach(json_decode($item->dependents_info) as $dependent)
                   <li data-bs-toggle="tooltip"
@@ -126,8 +154,6 @@
                       data-bs-placement="top"
                       class="avatar avatar-xs pull-up text-body"
                       data-bs-html="true"
-                      title='<span>{{ $dependent->name .'-'. $dependent->sex}}</span><small class="fw-light d-block">{{ (int)date_diff(date_create($dependent->dob),date_create("today"))->y . " anos de idade" }}</small>'
-                      aria-label='<span>{{ $dependent->name .'-'. $dependent->sex}}</span><small class="fw-light d-block">{{ (int)date_diff(date_create($dependent->dob),date_create("today"))->y . " anos de idade" }}</small>'
                       data-bs-original-title='<span>{{ $dependent->name .'-'. $dependent->sex}}</span><small class="fw-light d-block">{{ (int)date_diff(date_create($dependent->dob),date_create("today"))->y . " anos de idade" }}</small>'>
                     <span class="bx bx-xs bx-male dependent-{{$dependent->sex === 'MASCULINO' ? 'male' : 'female'}} dependent-icon"></span>
                   </li>
@@ -242,7 +268,7 @@
 
 <!-- Script para inicializar tooltips -->
 <script>
-  document.addEventListener('livewire:load', function () {
+  /*document.addEventListener('livewire:load', function () {
     console.log('testeeee')
     var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
     var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
@@ -255,5 +281,5 @@
     var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
       return new bootstrap.Tooltip(tooltipTriggerEl);
     });
-  });
+  });*/
 </script>

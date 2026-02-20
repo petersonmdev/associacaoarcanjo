@@ -3,7 +3,7 @@
   return [
     "creatorName" => "ThemeSelection",
     "creatorUrl" => "https://petersonmacedo.com.br",
-    "templateName" => "A.R.C.Anjo",
+    "templateName" => "Arcanjo",
     "templateSuffix" => "Peterson developer",
     "templateVersion" => "1.1.0",
     "templateFree" => true,
