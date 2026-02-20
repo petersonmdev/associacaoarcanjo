@@ -145,7 +145,7 @@ class StepThree extends Component
       }
     }
   }
-
+  
   public function validateStep()
   {
     $this->validate();
