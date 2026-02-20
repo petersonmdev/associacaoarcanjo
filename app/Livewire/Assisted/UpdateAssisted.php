@@ -78,7 +78,7 @@ class UpdateAssisted extends Component
   public $repositoryVoluntary;
   public string $name;
   public string $dob;
-  public int $active = 1;
+  public int $active;
   public string $taxvat;
   public string $civil_status;
   public string $education_level;
@@ -125,6 +125,7 @@ class UpdateAssisted extends Component
   {
     $this->name = $this->repositoryAssisted->name;
     $this->dob = $this->repositoryAssisted->dob;
+    $this->status = $this->repositoryAssisted->status;
     $this->taxvat = $this->repositoryAssisted->taxvat;
     $this->civil_status = $this->repositoryAssisted->civil_status;
     $this->education_level = $this->repositoryAssisted->education_level;

@@ -3,6 +3,8 @@
 namespace App\Livewire\Assisted\CreateMultiStep;
 
 use App\Enums\BrazilStates;
+use Illuminate\Http\Client\ConnectionException;
+use Illuminate\Support\Facades\Http;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 
@@ -17,6 +19,10 @@ class StepThree extends Component
     'city' => '',
     'state' => '',
   ];
+  public ?string $cepError = null;
+  public ?string $lastFetchedCep = null;
+  public int $cepRequestSeq = 0;
+  public int $activeCepRequestSeq = 0;
 
   #[Validate([
     'data.zipcode' => ['required', 'regex:/^\d{5}-\d{3}$/'],
@@ -37,6 +43,109 @@ class StepThree extends Component
     $this->data = $data;
   }
 
+  private function normalizeCep(string $value): string
+  {
+    return preg_replace('/[^0-9]/', '', $value);
+  }
+
+  private function clearAddressFields(): void
+  {
+    $this->data['address'] = '';
+    $this->data['neighborhood'] = '';
+    $this->data['city'] = '';
+    $this->data['state'] = '';
+  }
+
+  public function updatedDataZipcode($value): void
+  {
+    $this->cepError = null;
+
+    $cep = $this->normalizeCep((string) $value);
+
+    if ($this->lastFetchedCep !== null && $cep !== $this->lastFetchedCep) {
+      $this->clearAddressFields();
+      $this->lastFetchedCep = null;
+    }
+
+    if (strlen($cep) !== 8) {
+      return;
+    }
+
+    $this->fetchAddressByCep($cep);
+  }
+
+
+  public function fetchAddressByCepFromZipcode(): void
+  {
+    $this->cepError = null;
+
+    $cep = $this->normalizeCep((string) ($this->data['zipcode'] ?? ''));
+
+    if ($this->lastFetchedCep !== null && $cep !== $this->lastFetchedCep) {
+      $this->clearAddressFields();
+      $this->lastFetchedCep = null;
+    }
+
+    if (strlen($cep) !== 8) {
+      return;
+    }
+
+    $this->fetchAddressByCep($cep);
+  }
+
+  public function fetchAddressByCep(string $cep): void
+  {
+    if ($this->lastFetchedCep === $cep) {
+      return;
+    }
+
+    $this->cepError = null;
+    $this->clearAddressFields();
+
+    $seq = ++$this->cepRequestSeq;
+    $this->activeCepRequestSeq = $seq;
+
+    try {
+      $response = Http::timeout(5)
+        ->retry(1, 200)
+        ->get("https://viacep.com.br/ws/{$cep}/json/");
+
+      if ($this->activeCepRequestSeq !== $seq) {
+        return;
+      }
+
+      if (!$response->ok()) {
+        $this->cepError = 'Não foi possivel consultar o CEP no momento';
+        return;
+      }
+
+      $payload = $response->json();
+
+      if (!is_array($payload) || ($payload['erro'] ?? false)) {
+        $this->cepError = 'CEP não encontrado';
+        return;
+      }
+
+      $this->data['address'] = $payload['logradouro'] ?? '';
+      $this->data['neighborhood'] = $payload['bairro'] ?? '';
+      $this->data['city'] = $payload['localidade'] ?? '';
+      $this->data['state'] = $payload['uf'] ?? '';
+
+      $this->lastFetchedCep = $cep;
+
+      $this->dispatch('focus-number-address');
+
+    } catch (ConnectionException $e) {
+      if ($this->activeCepRequestSeq === $seq) {
+        $this->cepError = 'Tempo esgotado ao consultar o CEP. Tente novamente.';
+      }
+    } catch (\Throwable $e) {
+      if ($this->activeCepRequestSeq === $seq) {
+        $this->cepError = 'Falha ao consultar seu CEP. Tente novamente.';
+      }
+    }
+  }
+  
   public function validateStep()
   {
     $this->validate();

@@ -72,3 +72,26 @@ window.addEventListener('close-modal', event => {
     modal.hide();
   }
 });
+
+window.addEventListener('close-modal', event => {
+  const modalId = event.detail.modalId;
+  const modal = bootstrap.Modal.getInstance(document.getElementById(modalId));
+
+  if (modal) {
+    modal.hide();
+  }
+});
+
+document.addEventListener('livewire:load', function () {
+  var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+  var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+    return new bootstrap.Tooltip(tooltipTriggerEl);
+  });
+});
+
+document.addEventListener('livewire:update', function () {
+  var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+  var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+    return new bootstrap.Tooltip(tooltipTriggerEl);
+  });
+});

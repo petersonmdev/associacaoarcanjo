@@ -25,8 +25,8 @@ class StepOne extends Component
   #[Validate([
     'data.name' => 'required|string|max:255',
     'data.dob' => ['required', 'regex:/^(19|20)\d{2}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$/'],
-    'data.taxvat' => ['required', 'regex:/^\d{3}\.\d{3}\.\d{3}-\d{2}$/'],
-    'data.email' => 'required|email',
+    'data.taxvat' => ['required', 'regex:/^\d{3}\x2E\d{3}\x2E\d{3}\x2D\d{2}$/'],
+    'data.email' => 'email',
   ], message: [
     'data.*.required' => 'Campo obrigatório.',
     'data.*.max' => 'Tamanho máximo do campo excedido.',
