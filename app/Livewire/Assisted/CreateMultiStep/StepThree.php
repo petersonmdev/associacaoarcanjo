@@ -23,24 +23,43 @@ class StepThree extends Component
   public ?string $lastFetchedCep = null;
   public int $cepRequestSeq = 0;
   public int $activeCepRequestSeq = 0;
-
-  #[Validate([
-    'data.zipcode' => ['required', 'regex:/^\d{5}-\d{3}$/'],
-    'data.address' => 'required|string|max:150',
-    'data.number' => 'required|numeric',
-    'data.neighborhood' => 'required|string|max:100',
-    'data.city' => 'required|string|max:100',
-    'data.state' => 'required|string|max:2',
-  ], message: [
-    'data.*.required' => 'Campo obrigatório.',
-    'data.*.numeric' => 'O campo deve conter apenas números.',
-    'data.*.max' => 'Tamanho máximo do campo excedido.',
-    'data.zipcode.regex' => 'CEP inválido.',
-  ])]
+  public $dontKnowZipcode = false;
+  protected function rules()
+  {
+    return [
+      'data.zipcode'      => $this->dontKnowZipcode ? 'nullable' : 'required|min:8|max:9',
+      'data.address'      => 'required|string|max:150',
+      'data.number'       => 'required|numeric',
+      'data.neighborhood' => 'required|string|max:100',
+      'data.city'         => 'required|string|max:100',
+      'data.state'        => 'required|string|max:2',
+    ];
+  }
+  protected function messages()
+  {
+    return [
+      'data.zipcode.required' => 'O CEP é obrigatório.',
+      'data.*.required'       => 'Campo obrigatório.',
+      'data.*.numeric'        => 'O campo deve conter apenas números.',
+      'data.*.max'            => 'Tamanho máximo do campo excedido.',
+    ];
+  }
 
   public function mount($data)
   {
     $this->data = $data;
+
+    $this->dontKnowZipcode = $data['dontKnowZipcode'] ?? false;
+  }
+
+  public function updatedDontKnowZipcode($value)
+  {
+    $this->data['dontKnowZipcode'] = $value;
+    if ($value) {
+      $this->data['zipcode'] = '';
+      $this->cepError = null;
+      $this->resetErrorBag('data.zipcode');
+    }
   }
 
   private function normalizeCep(string $value): string

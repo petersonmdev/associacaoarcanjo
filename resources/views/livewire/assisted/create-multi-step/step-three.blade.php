@@ -9,7 +9,7 @@
         <div class="col-12 col-md-4 col-xl mb-3">
           <label for="cepAddressAssisted" class="form-label">CEP</label>
           <div class="position-relative">
-            <input type="text" class="form-control @error('data.zipcode') is-invalid @enderror @if ($cepError) is-invalid @endif" id="cepAddressAssisted" x-mask="99999-999" wire:model.live="data.zipcode" wire:blur="fetchAddressByCepFromZipcode" placeholder="99999-999"/>
+            <input type="text" class="form-control @error('data.zipcode') is-invalid @enderror @if ($cepError) is-invalid @endif" id="cepAddressAssisted" x-mask="99999-999" wire:model.live="data.zipcode" wire:blur="fetchAddressByCepFromZipcode" placeholder="99999-999" @if($dontKnowZipcode) disabled @endif/>
             <div
               class="position-absolute top-50 end-0 translate-middle-y me-3"
               wire:loading.flex
@@ -18,6 +18,17 @@
             >
               <div class="spinner-border spinner-border-sm text-primary" role="status" aria-hidden="true"></div>
             </div>
+          </div>
+          <div class="form-check mt-2">
+            <input
+              class="form-check-input"
+              type="checkbox"
+              id="unknownZipcode"
+              wire:model.live="dontKnowZipcode"
+            >
+            <label class="form-check-label" for="unknownZipcode">
+              Não sei o CEP
+            </label>
           </div>
           @error('data.zipcode') <span class="d-block invalid-feedback">{{ $message }}</span> @enderror
           @if ($cepError)
