@@ -10,8 +10,14 @@ class Voluntary extends Model
     use HasFactory;
 
     protected $fillable = [
+      'user_id',
+      'address_id',
+      'contact_id',
       'name',
       'email',
-      'user_id',
+      'taxvat',
+      'dob',
+      'driving',
+      'active',
     ];
 }

@@ -15,7 +15,7 @@ class CreateVoluntariesTable extends Migration
     {
         Schema::create('voluntaries', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('user_id')->nullable();
             $table->unsignedBigInteger('address_id')->nullable();
             $table->unsignedBigInteger('contact_id')->nullable();
             $table->string('name', 100);

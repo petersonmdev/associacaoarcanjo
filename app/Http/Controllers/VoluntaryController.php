@@ -24,7 +24,7 @@ class VoluntaryController extends Controller
      */
     public function store(Request $request)
     {
-      return view('app.voluntary-new');
+      return view('app.voluntary.create');
     }
 
     /**
