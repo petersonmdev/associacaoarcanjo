@@ -13,7 +13,7 @@ class IndexAssisted extends Component
   protected $paginationTheme = 'bootstrap';
   public $perpage = 10;
   public $search = '';
-  public $status_assisted;
+  public $status_assisted = '';
   public $queryAssisted = null;
 
   public function mount(){
@@ -42,8 +42,8 @@ class IndexAssisted extends Component
   {
     $query = AssistedRepository::findByAssistedNameComplete($this->search);
 
-    if (!is_null($this->status_assisted)) {
-      $query->where('assisteds.active', '=', $this->status_assisted);
+    if ($this->status_assisted !== '') {
+      $query->where('assisteds.active', '=', (int)$this->status_assisted);
     }
   }
 
@@ -51,8 +51,8 @@ class IndexAssisted extends Component
   {
     $query = AssistedRepository::findByAssistedNameComplete($this->search);
 
-    if (!is_null($this->status_assisted)) {
-      $query->where('assisteds.active', '=', $this->status_assisted);
+    if ($this->status_assisted !== '') {
+      $query->where('assisteds.active', '=', (int)$this->status_assisted);
     }
 
     return view('livewire.assisted.index-assisted', [

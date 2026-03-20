@@ -30,15 +30,15 @@ class StepFour extends Component
     'data.dependents.*.dependent_occupation' => 'string|max:100',
     'data.dependents.*.dependent_sex' => 'required_if:data.no_dependents,false|string|max:100',
   ], message: [
-    'data.dependents.*.dependent_name.required_if' => 'Campo obrigatório.',
-    'data.dependents.*.dependent_name.max' => 'Tamanho máximo do campo excedido.',
-    'data.dependents.*.dependent_dob.required_if' => 'Campo obrigatório.',
-    'data.dependents.*.dependent_dob.regex' => 'Data inválida.',
-    'data.dependents.*.dependent_sex.required_if' => 'Campo obrigatório.',
-    'data.dependents.*.dependent_sex.max' => 'Tamanho máximo do campo excedido.',
-    'data.dependents.*.dependent_parentage.required_if' => 'Campo obrigatório.',
-    'data.dependents.*.dependent_parentage.max' => 'Tamanho máximo do campo excedido.',
-    'data.dependents.*.dependent_occupation.max' => 'Tamanho máximo do campo excedido.',
+    'data.dependents.*.dependent_name.required_if' => 'O nome do dependente é obrigatório.',
+    'data.dependents.*.dependent_name.max' => 'O nome do dependente não pode exceder 100 caracteres.',
+    'data.dependents.*.dependent_dob.required_if' => 'A data de nascimento do dependente é obrigatória.',
+    'data.dependents.*.dependent_dob.regex' => 'Data de nascimento do dependente inválida. Use o formato DD/MM/AAAA.',
+    'data.dependents.*.dependent_sex.required_if' => 'O sexo do dependente é obrigatório.',
+    'data.dependents.*.dependent_sex.max' => 'O sexo selecionado é inválido.',
+    'data.dependents.*.dependent_parentage.required_if' => 'O parentesco do dependente é obrigatório.',
+    'data.dependents.*.dependent_parentage.max' => 'O parentesco não pode exceder 100 caracteres.',
+    'data.dependents.*.dependent_occupation.max' => 'A ocupação não pode exceder 100 caracteres.',
   ])]
 
   public function validateStep()

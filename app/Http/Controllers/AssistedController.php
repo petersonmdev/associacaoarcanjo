@@ -50,11 +50,25 @@ class AssistedController extends Controller
     public function show(int $id)
     {
         $assisted = AssistedRepository::find($id);
-        $addresses = AddressRepository::find($assisted->address_id);
-        $contacts = ContactRepository::find($assisted->contact_id);
-        $dependents = DependentRepository::findByAssistedId($assisted->id);
-        $incomes = IncomeRepository::findByAssistedId($assisted->id);
-        $voluntary = VoluntaryRepository::find($assisted->voluntary_id);
+        if (!$assisted) {
+          abort(404);
+        }
+
+        $addresses = $assisted->address_id !== null
+          ? AddressRepository::find((int) $assisted->address_id)
+          : null;
+
+        $contacts = $assisted->contact_id !== null
+          ? ContactRepository::find((int) $assisted->contact_id)
+          : null;
+
+        $dependents = DependentRepository::findByAssistedId((int) $assisted->id);
+        $incomes = IncomeRepository::findByAssistedId((int) $assisted->id);
+
+        $voluntary = $assisted->voluntary_id !== null
+          ? VoluntaryRepository::find((int) $assisted->voluntary_id)
+          : null;
+
         return view('app.assisted.show', [
           'assisted' => $assisted,
           'addresses' => $addresses,
@@ -68,6 +82,10 @@ class AssistedController extends Controller
     public function showPdf(int $id)
     {
       $assisted = AssistedRepository::find($id);
+      if (!$assisted) {
+        abort(404);
+      }
+
       return view('app.assisted.pdf.show', [
         'id' => $id,
         'assisted' => $assisted
@@ -84,6 +102,10 @@ class AssistedController extends Controller
     public function update(Request $request, $id)
     {
       $assisted = AssistedRepository::find($id);
+      if (!$assisted) {
+        abort(404);
+      }
+
       return view('app.assisted.update', [
         'id' => $id,
         'assisted' => $assisted

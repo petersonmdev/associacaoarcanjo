@@ -74,24 +74,63 @@ window.addEventListener('close-modal', event => {
 });
 
 window.addEventListener('close-modal', event => {
-  const modalId = event.detail.modalId;
-  const modal = bootstrap.Modal.getInstance(document.getElementById(modalId));
-
-  if (modal) {
-    modal.hide();
+  try {
+    if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+      const modalId = event.detail.modalId;
+      const modalElement = document.getElementById(modalId);
+      if (modalElement) {
+        const modal = bootstrap.Modal.getInstance(modalElement);
+        if (modal) {
+          modal.hide();
+        }
+      }
+    }
+  } catch (e) {
+    console.error('Error closing modal:', e);
   }
 });
 
-document.addEventListener('livewire:load', function () {
-  var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-  var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-    return new bootstrap.Tooltip(tooltipTriggerEl);
+function initializeAllTooltips() {
+  // Only run if bootstrap is available
+  if (typeof bootstrap === 'undefined' || !bootstrap.Tooltip) {
+    console.warn('Bootstrap not yet available for tooltips');
+    return;
+  }
+
+  // Dispose existing tooltips to avoid duplicates
+  document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(el => {
+    try {
+      const tooltip = bootstrap.Tooltip.getInstance(el);
+      if (tooltip) tooltip.dispose();
+    } catch (e) {}
   });
+
+  // Initialize new tooltips
+  document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(el => {
+    try {
+      new bootstrap.Tooltip(el, {
+        container: 'body',
+        html: true,
+        sanitize: false
+      });
+    } catch (e) {}
+  });
+}
+
+// Livewire 3+ events
+document.addEventListener('livewire:navigated', () => {
+  setTimeout(initializeAllTooltips, 50);
 });
 
-document.addEventListener('livewire:update', function () {
-  var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-  var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-    return new bootstrap.Tooltip(tooltipTriggerEl);
-  });
+document.addEventListener('livewire:updated', () => {
+  setTimeout(initializeAllTooltips, 50);
 });
+
+// Fallback for initial page load
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(initializeAllTooltips, 100);
+  });
+} else {
+  setTimeout(initializeAllTooltips, 100);
+}

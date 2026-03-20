@@ -28,10 +28,15 @@ class StepOne extends Component
     'data.taxvat' => ['required', 'regex:/^\d{3}\x2E\d{3}\x2E\d{3}\x2D\d{2}$/'],
     'data.email' => 'email',
   ], message: [
+    'data.name.required' => 'O nome é obrigatório.',
+    'data.name.max' => 'O nome não pode exceder 255 caracteres.',
+    'data.dob.required' => 'A data de nascimento é obrigatória.',
+    'data.dob.regex' => 'Data de nascimento inválida. Use o formato DD/MM/AAAA.',
+    'data.taxvat.required' => 'O CPF é obrigatório.',
+    'data.taxvat.regex' => 'CPF inválido. Use o formato 000.000.000-00.',
+    'data.email.email' => 'Informe um e-mail válido.',
     'data.*.required' => 'Campo obrigatório.',
     'data.*.max' => 'Tamanho máximo do campo excedido.',
-    'data.dob.regex' => 'Data inválida.',
-    'data.taxvat.regex' => 'CPF inválido.',
     'data.*.email' => 'E-mail inválido.',
   ])]
 

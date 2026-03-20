@@ -5,16 +5,61 @@ declare(strict_types=1);
 namespace App\Repositories;
 
 use App\Models\Voluntary;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\DB;
 
 class VoluntaryRepository extends AbstractRepository
 {
   protected static $model = Voluntary::class;
+
+  private static function completeQuery(): Builder
+  {
+    return self::loadModel()::query()->select([
+      'voluntaries.*',
+    ])
+    ->selectSub(function ($queryAssistedList) {
+      $queryAssistedList->selectRaw('JSON_ARRAYAGG(JSON_OBJECT("id", assisteds.id, "name", assisteds.name, "dob", assisteds.dob, "active", assisteds.active))')
+        ->from('assisteds')
+        ->whereColumn('assisteds.voluntary_id', 'voluntaries.id');
+    }, 'assisteds')
+    ->selectSub(function ($queryAddress) {
+      $queryAddress->selectRaw('JSON_OBJECTAGG(addresses.id, JSON_OBJECT("zipcode", addresses.zipcode, "address", addresses.address, "number", addresses.number, "complement", addresses.complement, "neighborhood", addresses.neighborhood, "city", addresses.city, "state", addresses.state)) as addresses_info')
+        ->from('addresses')
+        ->whereColumn('addresses.id', 'voluntaries.address_id');
+    }, 'addresses_voluntary_info')
+    ->selectSub(function ($queryAddress) {
+      $queryAddress->selectRaw('JSON_OBJECTAGG(addresses.id, JSON_OBJECT("neighborhood", addresses.neighborhood)) as addresses_info')
+        ->from('addresses')
+        ->join('assisteds', 'assisteds.address_id', '=', 'addresses.id')
+        ->whereColumn('assisteds.voluntary_id', 'voluntaries.id');
+    }, 'addresses_assisted_info')
+    ->selectSub(function ($queryAssisted) {
+      $queryAssisted->selectRaw('COUNT(*)')
+        ->from('assisteds')
+        ->whereColumn('assisteds.voluntary_id', 'voluntaries.id');
+    }, 'assisteds_count')
+    ->selectSub(function ($queryContact) {
+      $queryContact->selectRaw('JSON_OBJECT("whatsapp", contacts.phone_number_whatsapp, "phone1", contacts.phone_number1, "phone2", contacts.phone_number2) as contacts_info')
+        ->from('contacts')
+        ->whereColumn('contacts.id', 'voluntaries.contact_id');
+    }, 'contacts_info')
+    ->orderBy('voluntaries.id', 'desc');
+  }
 
   public static function findByVoluntaryName(string $voluntary_name)
   {
     return empty($voluntary_name)
       ? self::loadModel()::all()
       : self::loadModel()::query()->where('voluntaries.name', 'like', '%' . $voluntary_name . '%');
+  }
+
+  public static function findByVoluntaryNameComplete(string $voluntary_name)
+  {
+    $query = self::completeQuery();
+
+    return empty($voluntary_name)
+      ? $query
+      : $query->where('voluntaries.name', 'like', '%' . $voluntary_name . '%');
   }
 
   public static function findVoluntaryAndAddressByName(string $voluntary_name)
@@ -38,6 +83,37 @@ class VoluntaryRepository extends AbstractRepository
 
   public static function findByLastedCreated(int $id)
   {
-    return self::loadModel()::query()->join('adresses', 'assisted_id', '=', $id);
+    return self::loadModel()::query()->join('addresses', 'voluntaries.address_id', '=', 'addresses.id')->where('voluntaries.id', '=', $id);
+  }
+
+  public static function deleteWithRelations(int $id): int
+  {
+    $voluntary = self::find($id);
+
+    if (!$voluntary) {
+      return 0;
+    }
+
+    return DB::transaction(function () use ($id, $voluntary): int {
+      $deleted = self::delete($id);
+
+      if (!$deleted) {
+        return 0;
+      }
+
+      if ($voluntary->user_id) {
+        \App\Models\User::query()->where('id', $voluntary->user_id)->delete();
+      }
+
+      if ($voluntary->contact_id) {
+        \App\Models\Contact::query()->where('id', $voluntary->contact_id)->delete();
+      }
+
+      if ($voluntary->address_id) {
+        \App\Models\Address::query()->where('id', $voluntary->address_id)->delete();
+      }
+
+      return $deleted;
+    });
   }
 }
