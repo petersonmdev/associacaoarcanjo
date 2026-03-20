@@ -56,11 +56,11 @@ class CreateVoluntary extends Component
             'formData.name' => 'required|string|max:255',
             'formData.dob' => ['regex:/^(19|20)\d{2}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$/'],
             'formData.taxvat' => 'regex:/^\d{3}\x2E\d{3}\x2E\d{3}\x2D\d{2}$/',
-            'formData.email' => [$this->createUserVoluntary ? 'required' : 'nullable', 'email'],
+        'formData.email' => $this->createUserVoluntary ? 'required|email' : 'nullable|email',
             'formData.user_password' => [$this->createUserVoluntary ? 'required' : 'nullable', 'string', 'min:6'],
             'formData.address.zipcode' => $this->dontKnowZipcode ? 'min:8|max:9' : 'required|min:8|max:9',
             'formData.address.street' => 'required|string|max:150',
-            'formData.address.number' => 'integer',
+            'formData.address.number' => 'nullable|integer',
             'formData.address.complement' => 'string|max:100',
             'formData.address.neighborhood' => 'required|string|max:100',
             'formData.address.city' => 'required|string|max:100',
@@ -73,12 +73,29 @@ class CreateVoluntary extends Component
         return [
             'formData.*.required' => 'Campo obrigatório.',
             'formData.*.max' => 'Tamanho máximo do campo excedido.',
+            'formData.address.street.required' => 'O endereço é obrigatório.',
+            'formData.address.neighborhood.required' => 'O bairro é obrigatório.',
+            'formData.address.city.required' => 'A cidade é obrigatória.',
+            'formData.address.state.required' => 'O estado é obrigatório.',
             'formData.dob.regex' => 'Data inválida.',
             'formData.taxvat.regex' => 'CPF inválido.',
             'formData.email.email' => 'E-mail inválido.',
             'formData.address.zipcode.regex' => 'CEP inválido.',
             'formData.address.zipcode.required' => 'O CEP é obrigatório.',
         ];
+    }
+
+    protected function validationAttributes(): array
+    {
+      return [
+        'formData.address.zipcode' => 'CEP',
+        'formData.address.street' => 'endereço',
+        'formData.address.number' => 'número',
+        'formData.address.complement' => 'complemento',
+        'formData.address.neighborhood' => 'bairro',
+        'formData.address.city' => 'cidade',
+        'formData.address.state' => 'estado',
+      ];
     }
 
     public function mount(?array $data = null): void
@@ -213,14 +230,18 @@ class CreateVoluntary extends Component
 
         $suggestedAssisteds = ! $this->showSuggestedAssisteds || strlen($search) < 2
             ? collect()
-            : AssistedRepository::findByAssistedNameComplete($search)
+            : AssistedRepository::prioritizeWithoutVoluntaryFirst(
+              AssistedRepository::findByAssistedNameComplete($search)
+            )
             ->whereNotIn('assisteds.id', $selectedIds)
                 ->limit(8)
                 ->get();
 
         $addressSuggestedAssisteds = ($neighborhood === '' || $city === '' || $state === '')
             ? collect()
-            : AssistedRepository::findByAddressComplete($neighborhood, $city, $state)
+            : AssistedRepository::prioritizeWithoutVoluntaryFirst(
+              AssistedRepository::findByAddressComplete($neighborhood, $city, $state)
+            )
             ->whereNotIn('assisteds.id', $selectedIds)
                 ->limit(8)
                 ->get();
@@ -289,10 +310,12 @@ class CreateVoluntary extends Component
     private function saveAddress(): ?int
     {
       try {
+        $number = $this->formData['address']['number'] ?? null;
+
         $address = AddressRepository::create([
           'zipcode' => $this->formData['address']['zipcode'] ?? '',
           'address' => $this->formData['address']['street'] ?? '',
-          'number' => $this->formData['address']['number'] ?? '',
+          'number' => $number === '' ? null : $number,
           'complement' => $this->formData['address']['complement'] ?? '',
           'neighborhood' => $this->formData['address']['neighborhood'] ?? '',
           'city' => $this->formData['address']['city'] ?? '',
@@ -336,7 +359,7 @@ class CreateVoluntary extends Component
                 'address_id' => $addressId,
                 'contact_id' => $contactId,
                 'name' => $this->formData['name'],
-                'email' => $this->formData['email'],
+              'email' => (string) ($this->formData['email'] ?? ''),
                 'taxvat' => $this->formData['taxvat'],
                 'dob' => $this->formData['dob'],
                 'driving' => $this->formData['driving'],
@@ -389,6 +412,10 @@ class CreateVoluntary extends Component
 
     public function save(): void
     {
+      if (! $this->createUserVoluntary && (($this->formData['email'] ?? '') === '')) {
+        $this->formData['email'] = null;
+      }
+
       $this->validate();
       $this->saveVoluntary();
     }

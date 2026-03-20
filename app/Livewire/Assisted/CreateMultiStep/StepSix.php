@@ -18,6 +18,12 @@ class StepSix extends Component
     'data.health_history' => 'required|string|max:1000',
     'data.continuous_medication' => 'required|string|max:1000',
   ], message: [
+    'data.life_history.required' => 'A história de vida é obrigatória.',
+    'data.life_history.max' => 'A história de vida não pode exceder 1000 caracteres.',
+    'data.health_history.required' => 'O histórico de saúde é obrigatório.',
+    'data.health_history.max' => 'O histórico de saúde não pode exceder 1000 caracteres.',
+    'data.continuous_medication.required' => 'Os medicamentos de uso contínuo são obrigatórios.',
+    'data.continuous_medication.max' => 'Os medicamentos de uso contínuo não podem exceder 1000 caracteres.',
     'data.*.required' => 'Campo obrigatório.',
     'data.*.max' => 'Tamanho máximo do campo excedido.',
   ])]

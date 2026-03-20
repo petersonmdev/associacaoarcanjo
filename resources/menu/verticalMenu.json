@@ -44,11 +44,6 @@
           "url": "voluntary/new",
           "name": "Cadastrar novo",
           "slug": "voluntary-new"
-        },
-        {
-          "url": "donated/voluntary",
-          "name": "Confiar doações",
-          "slug": "donated-bind-voluntary"
         }
       ]
     },
@@ -60,8 +55,8 @@
       "icon": "menu-icon tf-icons bx bxs-report",
       "slug": "reports",
       "badge": [
-        "label-info fs-tiny",
-        "Novo"
+        "label-warning fs-tiny",
+        "Em breve"
       ],
       "submenu": [
         {

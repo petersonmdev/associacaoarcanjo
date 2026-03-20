@@ -1,5 +1,8 @@
 <div>
     <div class="row mb-3">
+          <div class="col-md-12 mt-2 mb-4">
+            <h5 class="m-0 text-primary d-flex align-items-center"><span class="tf-icons bx bx-info-circle fs-3 me-2"></span>Dados pessoais</h5>
+          </div>
           <div class="col-md">
             <label for="nameVoluntary" class="form-label">Nome responsável</label>
             <input
@@ -83,13 +86,13 @@
         <hr class="my-3">
 
         <div class="row mb-4">
-          <div class="col-md-12 my-2">
-            <h5><span class="tf-icons bx bx-home"></span>&nbsp; Endereço</h5>
+          <div class="col-md-12 mt-2 mb-4">
+            <h5 class="m-0 text-primary d-flex align-items-center"><span class="tf-icons bx bx-home fs-3 me-2"></span>Endereço</h5>
           </div>
           <div class="col-md">
             <label for="cepAddressVoluntary" class="form-label">CEP</label>
             <div class="position-relative">
-              <input type="text" class="form-control @error('formData.address.zipcode') is-invalid @enderror @if ($cepError) is-invalid @endif" id="cepAddressVoluntary" x-mask="99999-999" wire:model.live="formData.address.zipcode" wire:blur="fetchAddressByCepFromZipcode" placeholder="99999-999" @if($dontKnowZipcode) disabled @endif/>
+              <input type="text" class="form-control @error('formData.address.zipcode') is-invalid @enderror @if ($cepError) is-invalid @endif" id="cepAddressVoluntary" x-mask="99999-999" wire:model.blur="formData.address.zipcode" wire:blur="fetchAddressByCepFromZipcode" placeholder="99999-999" @if($dontKnowZipcode) disabled @endif/>
               <div
                 class="position-absolute top-50 end-0 translate-middle-y me-3"
                 wire:loading.flex
@@ -220,31 +223,29 @@
         <hr class="my-3">
 
         <div class="row mb-4">
-          <div class="col-md-12 my-2">
+          <div class="col-md-12 mt-2 mb-4">
             <div class="d-flex justify-content-between align-items-center mb-4">
-              <h5 class="m-0"><span class="tf-icons bx bx-home-heart"></span>&nbsp; Assistidos vinculados</h5>
+              <h5 class="m-0 text-primary d-flex align-items-center"><span class="tf-icons bx bx-home-heart fs-3 me-2"></span>Assistidos vinculados</h5>
               <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modalAddAssisted" wire:click="openAssistedSuggestions">
                 <span class="tf-icons bx bx-add-to-queue"></span>&nbsp; Adicionar Assistido
               </button>
             </div>
             <!-- Modal -->
-            <div class="modal fade" id="modalAddAssisted" tabindex="-1" aria-labelledby="modalCenterTitle" wire:ignore.self>
+            <div class="modal fade" id="modalAddAssisted" tabindex="-1" aria-labelledby="modalAssistedTitle" wire:ignore.self>
               <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                   <div class="modal-header">
-                    <h5 class="modal-title" id="modalCenterTitle">Vincular Assistido</h5>
+                    <h5 class="modal-title" id="modalAssistedTitle">Vincular Assistido</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                   </div>
                   <div class="modal-body">
                     <div class="row">
                       <div class="col-md mb-3">
                         <label for="searchAssisted" class="form-label">Pesquisar</label>
-                        <input type="text" class="form-control" id="searchAssisted" wire:model.live.debounce.300ms="searchAssisted" placeholder="Busque por outros assistidos..." aria-describedby="searchAssistedControlHelp">
-                        <div id="searchAssistedControlHelp" class="form-text">
-                          Busque por pelo responsável pela família ou um de seus dependentes
-                          <div class="text-muted small">
-                            Digite pelo menos 2 caracteres para buscar assistidos.
-                          </div>
+                        <input type="text" class="form-control" id="searchAssisted" wire:model.live.debounce.300ms="searchAssisted" placeholder="Busque por um assistido..." aria-describedby="searchAssistedHelp">
+                        <div id="searchAssistedHelp" class="form-text text-muted small">
+                          Busque pelo responsável pela família ou um de seus dependentes.
+                          Digite pelo menos 2 caracteres para buscar.
                         </div>
                       </div>
                     </div>
@@ -288,7 +289,10 @@
                                     @if (!empty($addressSuggestedAssisted->voluntary_name))
                                       <div><span class="badge bg-label-warning mt-1">Vinculado a {{ $addressSuggestedAssisted->voluntary_name }}</span></div>
                                     @else
-                                      <div><span class="badge bg-label-success mt-1">Sem voluntário vinculado</span></div>
+                                      <div class="d-flex align-items-center gap-2 mt-1">
+                                        <span class="badge bg-label-primary">Prioritário</span>
+                                        <span class="badge bg-label-success">Sem voluntário vinculado</span>
+                                      </div>
                                     @endif
                                   </div>
                                   <button type="button" class="btn btn-sm btn-outline-primary" wire:click="queueAssistedAddition({{ $addressSuggestedAssisted->id }})">
@@ -296,8 +300,8 @@
                                   </button>
                                 </div>
                               @empty
-                                <div class="list-group-item text-muted">
-                                  Nenhum assistido encontrado para o mesmo endereço.
+                                <div class="list-group-item text-muted bg-secondary">
+                                  Nenhum assistido no mesmo bairro.
                                 </div>
                               @endforelse
                             </div>
@@ -318,7 +322,10 @@
                                   @if (!empty($suggestedAssisted->voluntary_name))
                                     <div><span class="badge bg-label-warning mt-1">Vinculado a {{ $suggestedAssisted->voluntary_name }}</span></div>
                                   @else
-                                    <div><span class="badge bg-label-success mt-1">Sem voluntário vinculado</span></div>
+                                    <div class="d-flex align-items-center gap-2 mt-1">
+                                      <span class="badge bg-label-primary">Prioritário</span>
+                                      <span class="badge bg-label-success">Sem voluntário vinculado</span>
+                                    </div>
                                   @endif
                                 </div>
                                 <button type="button" class="btn btn-sm btn-outline-primary" wire:click="queueAssistedAddition({{ $suggestedAssisted->id }})">
@@ -326,7 +333,7 @@
                                 </button>
                               </div>
                             @empty
-                              <div class="list-group-item text-muted">
+                              <div class="list-group-item text-muted bg-secondary">
                                 Nenhum assistido encontrado.
                               </div>
                             @endforelse
@@ -443,10 +450,10 @@
 
         <hr class="my-3">
 
-        <div class="row mt-3">
-          <div class="flex-md-12 d-flex justify-content-between gap-3">
-            <button class="btn btn-outline-secondary" type="button" wire:click="back()">Voltar</button>
-        <button class="btn btn-success" type="submit" wire:click="save" >Salvar</button>
+        <div class="mt-3">
+          <div class="d-md-flex d-block justify-content-between flex-row-reverse gap-3">
+            <button class="w-100 w-md-auto btn btn-lg btn-success mb-3" type="submit" wire:click="save">Salvar</button>
+            <a class="w-100 w-md-auto btn btn-outline-secondary mb-3" href="{{ route('voluntary-list') }}"><i class="bx bx-list-ul me-2"></i> Voltar</a>
           </div>
         </div>
 </div>

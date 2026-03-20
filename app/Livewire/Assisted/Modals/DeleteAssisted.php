@@ -25,23 +25,25 @@ class DeleteAssisted extends Component
   public function deleteAssisted($id)
   {
     try {
-      $deleted = AssistedRepository::delete($id);
-      $this->dispatch('AssistedDeleted');
+      $deleted = AssistedRepository::deleteWithRelations($id);
+
       if ($deleted) {
-        $this->dispatch(
+       $this->dispatch(
           'alert',
-          type: 'error',
+          type: 'success',
           title: 'Cadastro deletado com sucesso.',
           position: 'center',
           timer: 1500
         );
+
+        $this->dispatch('AssistedDeleted');
       }
     } catch (Exception $e) {
       Log::error($e);
       $this->dispatch(
         'alert',
         type: 'error',
-        title: 'Ocorreu um erro ao Deletar o cadastro.',
+        title: 'Ocorreu um erro ao deletar o cadastro.',
         position: 'center',
         timer: 1500
       );

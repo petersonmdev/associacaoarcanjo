@@ -24,9 +24,9 @@ class UpdateAssisted extends Component
     'name' => 'required|string|max:255',
     'dob' => ['required', 'regex:/^(19|20)\d{2}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$/'],
     'taxvat' => ['required', 'regex:/^\d{3}\.\d{3}\.\d{3}-\d{2}$/'],
-    'email' => 'required|email',
+    'email' => 'nullable|email',
     'phone_number_whatsapp' => 'required|regex:/^\(?\d{2}\)?\s?\d{4,5}-\d{4}$/',
-    'zipcode' => ['required', 'regex:/^\d{5}-\d{3}$/'],
+    'zipcode' => ['required_if:dontKnowZipcode,false', 'regex:/^\d{5}-\d{3}$/'],
     'address' => 'required|string|max:150',
     'number' => ['required','numeric'],
     'neighborhood' => 'required|string|max:100',
@@ -42,11 +42,16 @@ class UpdateAssisted extends Component
     'life_history' => 'required|string|max:1000',
     'health_history' => 'required|string|max:1000',
     'continuous_medication' => 'required|string|max:1000',
-    'voluntary_id' => 'required|integer|exists:voluntaries,id',
+    'voluntary_id' => 'nullable|integer|exists:voluntaries,id',
   ], message: [
     '*.numeric' => 'O campo deve conter apenas números.',
     '*.required' => 'Campo obrigatório.',
     '*.max' => 'Tamanho máximo do campo excedido.',
+    'address.required' => 'O endereço é obrigatório.',
+    'neighborhood.required' => 'O bairro é obrigatório.',
+    'city.required' => 'A cidade é obrigatória.',
+    'state.required' => 'O estado é obrigatório.',
+    'number.required' => 'O número é obrigatório.',
     'dob.regex' => 'Data inválida.',
     'taxvat.regex' => 'CPF inválido.',
     '*.email' => 'E-mail inválido.',
@@ -67,41 +72,42 @@ class UpdateAssisted extends Component
     'incomes.*.incomes.min' => 'O valor deve ser maior que R$1.',
     'voluntary_id.exists' => 'Voluntário inválido.',
   ])]
-  public bool $jobless;
-  public $assisted;
-  public $id;
-  public $repositoryAssisted;
-  public $repositoryContact;
-  public $repositoryAddress;
-  public $repositoryDependents;
-  public $repositoryIncomes;
-  public $repositoryVoluntary;
-  public string $name;
-  public string $dob;
-  public int $active;
-  public string $taxvat;
-  public string $civil_status;
-  public string $education_level;
-  public string $profession;
-  public string $email;
-  public string $phone_number_whatsapp;
-  public string $phone_number1;
-  public string $phone_number2;
-  public string $zipcode;
-  public string $address;
-  public int $number;
-  public string $complement;
-  public string $neighborhood;
-  public string $city;
-  public string $state;
-  public array $initialDependents;
-  public array $dependents;
-  public array $initialIncomes;
-  public array $incomes;
-  public string $life_history;
-  public string $health_history;
-  public string $continuous_medication;
-  public int $voluntary_id;
+  public bool $jobless = false;
+  public bool $dontKnowZipcode = false;
+  public $assisted = null;
+  public $id = null;
+  public $repositoryAssisted = null;
+  public $repositoryContact = null;
+  public $repositoryAddress = null;
+  public $repositoryDependents = null;
+  public $repositoryIncomes = null;
+  public $repositoryVoluntary = null;
+  public string $name = '';
+  public string $dob = '';
+  public int $active = 1;
+  public string $taxvat = '';
+  public string $civil_status = '';
+  public string $education_level = '';
+  public string $profession = '';
+  public string $email = '';
+  public string $phone_number_whatsapp = '';
+  public string $phone_number1 = '';
+  public string $phone_number2 = '';
+  public string $zipcode = '';
+  public string $address = '';
+  public int $number = 0;
+  public string $complement = '';
+  public string $neighborhood = '';
+  public string $city = '';
+  public string $state = '';
+  public array $initialDependents = [];
+  public array $dependents = [];
+  public array $initialIncomes = [];
+  public array $incomes = [];
+  public string $life_history = '';
+  public string $health_history = '';
+  public string $continuous_medication = '';
+  public $voluntary_id = null;
 
   public function mount($assistedId)
   {
@@ -112,36 +118,43 @@ class UpdateAssisted extends Component
   public function loadAssistedData()
   {
     $this->repositoryAssisted = AssistedRepository::find($this->id);
-    $this->repositoryContact = ContactRepository::find($this->repositoryAssisted->contact_id);
-    $this->repositoryAddress = AddressRepository::find($this->repositoryAssisted->address_id);
+    $this->repositoryContact = $this->repositoryAssisted?->contact_id !== null
+      ? ContactRepository::find((int) $this->repositoryAssisted->contact_id)
+      : null;
+    $this->repositoryAddress = $this->repositoryAssisted?->address_id !== null
+      ? AddressRepository::find((int) $this->repositoryAssisted->address_id)
+      : null;
     $this->repositoryDependents = DependentRepository::findByAssistedId($this->id);
     $this->repositoryIncomes = IncomeRepository::findByAssistedId($this->id);
-    $this->repositoryVoluntary = VoluntaryRepository::find($this->repositoryAssisted->voluntary_id);
+    $this->repositoryVoluntary = $this->repositoryAssisted?->voluntary_id !== null
+      ? VoluntaryRepository::find((int) $this->repositoryAssisted->voluntary_id)
+      : null;
 
     $this->fillFormFields();
   }
 
   public function fillFormFields()
   {
-    $this->name = $this->repositoryAssisted->name;
-    $this->dob = $this->repositoryAssisted->dob;
-    $this->status = $this->repositoryAssisted->status;
-    $this->taxvat = $this->repositoryAssisted->taxvat;
-    $this->civil_status = $this->repositoryAssisted->civil_status;
-    $this->education_level = $this->repositoryAssisted->education_level;
-    $this->profession = $this->repositoryAssisted->profession;
-    $this->jobless = $this->repositoryAssisted->jobless;
-    $this->email = $this->repositoryAssisted->email;
-    $this->phone_number_whatsapp = $this->repositoryContact->phone_number_whatsapp;
-    $this->phone_number1 = $this->repositoryContact->phone_number1;
-    $this->phone_number2 = $this->repositoryContact->phone_number2;
-    $this->zipcode = $this->repositoryAddress->zipcode;
-    $this->address = $this->repositoryAddress->address;
-    $this->number = $this->repositoryAddress->number;
-    $this->complement = $this->repositoryAddress->complement;
-    $this->neighborhood = $this->repositoryAddress->neighborhood;
-    $this->city = $this->repositoryAddress->city;
-    $this->state = $this->repositoryAddress->state;
+    $this->name = (string) ($this->repositoryAssisted?->name ?? '');
+    $this->dob = (string) ($this->repositoryAssisted?->dob ?? '');
+    $this->active = (int) ($this->repositoryAssisted?->active ?? Status::ATIVO->value);
+    $this->taxvat = (string) ($this->repositoryAssisted?->taxvat ?? '');
+    $this->civil_status = (string) ($this->repositoryAssisted?->civil_status ?? '');
+    $this->education_level = (string) ($this->repositoryAssisted?->education_level ?? '');
+    $this->profession = (string) ($this->repositoryAssisted?->profession ?? '');
+    $this->jobless = (bool) ($this->repositoryAssisted?->jobless ?? false);
+    $this->email = (string) ($this->repositoryAssisted?->email ?? '');
+    $this->phone_number_whatsapp = (string) ($this->repositoryContact?->phone_number_whatsapp ?? '');
+    $this->phone_number1 = (string) ($this->repositoryContact?->phone_number1 ?? '');
+    $this->phone_number2 = (string) ($this->repositoryContact?->phone_number2 ?? '');
+    $this->zipcode = (string) ($this->repositoryAddress?->zipcode ?? '');
+    $this->address = (string) ($this->repositoryAddress?->address ?? '');
+    $this->number = (int) ($this->repositoryAddress?->number ?? 0);
+    $this->complement = (string) ($this->repositoryAddress?->complement ?? '');
+    $this->neighborhood = (string) ($this->repositoryAddress?->neighborhood ?? '');
+    $this->city = (string) ($this->repositoryAddress?->city ?? '');
+    $this->state = (string) ($this->repositoryAddress?->state ?? '');
+    $this->dontKnowZipcode = empty($this->zipcode);
     $this->dependents = $this->repositoryDependents->map(function ($dependent) {
       $this->initialDependents[] = $dependent->id;
       return [
@@ -166,15 +179,30 @@ class UpdateAssisted extends Component
         'assisted_id' => (int)$this->id
       ];
     })->toArray();
-    $this->life_history = $this->repositoryAssisted->life_history;
-    $this->health_history = $this->repositoryAssisted->health_history;
-    $this->continuous_medication = $this->repositoryAssisted->continuous_medication;
-    $this->voluntary_id = $this->repositoryVoluntary->id;
+    $this->life_history = (string) ($this->repositoryAssisted?->life_history ?? '');
+    $this->health_history = (string) ($this->repositoryAssisted?->health_history ?? '');
+    $this->continuous_medication = (string) ($this->repositoryAssisted?->continuous_medication ?? '');
+    $this->voluntary_id = $this->repositoryVoluntary?->id;
+  }
+
+  public function updatedVoluntaryId($value): void
+  {
+    $this->voluntary_id = ($value === '' || $value === null) ? null : (int) $value;
+  }
+
+  public function updatedDontKnowZipcode($value)
+  {
+    if ($value) {
+      $this->zipcode = '';
+      $this->resetErrorBag('zipcode');
+    }
   }
 
   public function render()
   {
-    $voluntary = VoluntaryRepository::find($this->voluntary_id);
+    $voluntary = $this->voluntary_id > 0
+      ? VoluntaryRepository::find((int) $this->voluntary_id)
+      : null;
     $allVoluntaries = VoluntaryRepository::all();
     return view('livewire.assisted.update-assisted', [
       'voluntary'=> $voluntary,
@@ -373,7 +401,7 @@ class UpdateAssisted extends Component
   private function updateAssisted()
   {
     $this->updateEntity(AssistedRepository::class, $this->id, [
-      'voluntary_id' => $this->voluntary_id,
+      'voluntary_id' => $this->voluntary_id ?: null,
       'name' => $this->name,
       'email' => $this->email,
       'taxvat' => $this->taxvat,

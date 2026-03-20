@@ -24,6 +24,7 @@ class StepTwo extends Component
     'data.phone_number_1' => 'regex:/^\(?\d{2}\)?\s?\d{4,5}-\d{4}$/',
     'data.phone_number_2' => 'regex:/^\(?\d{2}\)?\s?\d{4,5}-\d{4}$/',
   ], message: [
+    'data.phone_number_whatsapp.required' => 'O celular (WhatsApp) é obrigatório.',
     'data.*.required' => 'Campo obrigatório.',
     'data.phone_number_whatsapp.regex' => 'Número de celular inválido.',
     'data.phone_number_1.regex' => 'Número de celular inválido.',

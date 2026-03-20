@@ -39,9 +39,33 @@ class StepThree extends Component
   {
     return [
       'data.zipcode.required' => 'O CEP é obrigatório.',
+      'data.zipcode.min' => 'O CEP deve ter pelo menos 8 dígitos.',
+      'data.zipcode.max' => 'O CEP deve ter no máximo 9 caracteres.',
+      'data.address.required' => 'O endereço é obrigatório.',
+      'data.address.max' => 'O endereço não pode exceder 150 caracteres.',
+      'data.number.required' => 'O número é obrigatório.',
+      'data.number.numeric' => 'O número deve conter apenas dígitos.',
+      'data.neighborhood.required' => 'O bairro é obrigatório.',
+      'data.neighborhood.max' => 'O bairro não pode exceder 100 caracteres.',
+      'data.city.required' => 'A cidade é obrigatória.',
+      'data.city.max' => 'A cidade não pode exceder 100 caracteres.',
+      'data.state.required' => 'O estado é obrigatório.',
+      'data.state.max' => 'O estado deve ter 2 caracteres.',
       'data.*.required'       => 'Campo obrigatório.',
       'data.*.numeric'        => 'O campo deve conter apenas números.',
       'data.*.max'            => 'Tamanho máximo do campo excedido.',
+    ];
+  }
+
+  protected function validationAttributes(): array
+  {
+    return [
+      'data.zipcode' => 'CEP',
+      'data.address' => 'endereço',
+      'data.number' => 'número',
+      'data.neighborhood' => 'bairro',
+      'data.city' => 'cidade',
+      'data.state' => 'estado',
     ];
   }
 

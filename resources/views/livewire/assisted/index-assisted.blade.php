@@ -1,34 +1,5 @@
 <div x-data>
   @livewireStyles
-  <style>
-    .tooltip {
-      position: absolute;
-      z-index: 9999;
-      opacity: 1;
-      top: -5px;
-      transform: translateY(calc(-50% - 5px));
-      visibility: visible;
-    }
-
-    .tooltip-arrow {
-      position: absolute;
-      border-style: solid;
-      border-width: 5px 5px 0 5px;
-      border-color: #222 transparent transparent transparent;
-      bottom: -5px;
-      left: 50%;
-      transform: translateX(-50%);
-    }
-
-    .tooltip-inner {
-      background-color: #222;
-      color: #fff;
-      padding: 5px 10px;
-      border-radius: 4px;
-      font-size: 14px;
-      margin: 0 auto;
-    }
-  </style>
   <div class="mb-4 d-flex">
     <div class="d-none d-md-block col-md-4">
       <div class="row">
@@ -86,7 +57,7 @@
       </thead>
       <tbody class="table-border-bottom-0">
       @foreach ($assisted as $item)
-        <tr>
+        <tr wire:key="assisted-row-{{ $item->id }}">
           <td>
             <a wire:key="{{ $item->id }}" href="{{route('assisted-show', [ 'id' => $item->id ])}}">
               <span class="fw-medium">{{ '#'.sprintf('%04d', $item->id) }}</span>
@@ -98,63 +69,13 @@
             </a>
           </td>
           <td>
-
-{{--            <ul class="position-relative list-unstyled users-list m-0 avatar-group d-flex align-items-center" x-data="{tooltip:false}">--}}
-{{--              @if ($item->dependents_info)--}}
-{{--                @foreach(json_decode($item->dependents_info) as $dependent)--}}
-{{--                  <li--}}
-{{--                    class="bg-[#535353]"--}}
-{{--                    x-on:mouseenter="tooltip=true"--}}
-{{--                    x-on:mouseleave="tooltip=false">--}}
-{{--                    <span class="bx bx-xs bx-male dependent-{{$dependent->sex === 'MASCULINO' ? 'male' : 'female'}} dependent-icon"></span>--}}
-{{--                  </li>--}}
-{{--                  <div x-show="tooltip" x-cloak>--}}
-{{--                    <div class="tooltip bs-tooltip-top" role="tooltip">--}}
-{{--                      <div class="tooltip-arrow"></div>--}}
-{{--                      <div class="tooltip-inner">--}}
-{{--                        <span>{{ $dependent->name .'-'. strtolower($dependent->sex)}}</span><small class="fw-light d-block">{{ (int)date_diff(date_create($dependent->dob),date_create("today"))->y . " anos de idade" }}</small>--}}
-{{--                      </div>--}}
-{{--                    </div>--}}
-{{--                  </div>--}}
-{{--                @endforeach--}}
-{{--                  <?php--}}
-{{--                  $array = json_decode($item->dependents_info, true);--}}
-{{--                  $numberOfElements = count($array);--}}
-{{--                  ?>--}}
-{{--                <li><small class="n-dependents">&nbsp;({{ $numberOfElements }})</small></li>--}}
-{{--              @else--}}
-{{--                <li><small class="n-dependents">&nbsp;(Sem dependentes)</small></li>--}}
-{{--              @endif--}}
-{{--            </ul>--}}
-
-
-{{--            <div class="relative" x-data="{tooltip:false}">--}}
-{{--              <button--}}
-{{--                type="button"--}}
-{{--                class="btn btn-primary"--}}
-{{--                x-on:mouseenter="tooltip=true"--}}
-{{--                x-on:mouseleave="tooltip=false">--}}
-{{--                Top--}}
-{{--              </button>--}}
-{{--              <div x-show="tooltip" x-cloak>--}}
-{{--                <div class="tooltip bs-tooltip-top" role="tooltip">--}}
-{{--                  <div class="tooltip-arrow"></div>--}}
-{{--                  <div class="tooltip-inner">--}}
-{{--                    <i class='bx bx-bell bx-xs'></i> <span>Tooltip on teste</span>--}}
-{{--                  </div>--}}
-{{--                </div>--}}
-{{--              </div>--}}
-{{--            </div>--}}
-
             <ul class="list-unstyled users-list m-0 avatar-group d-flex align-items-center">
               @if ($item->dependents_info)
                 @foreach(json_decode($item->dependents_info) as $dependent)
                   <li data-bs-toggle="tooltip"
-                      data-popup="tooltip-custom"
                       data-bs-placement="top"
                       class="avatar avatar-xs pull-up text-body"
-                      data-bs-html="true"
-                      data-bs-original-title='<span>{{ $dependent->name .'-'. $dependent->sex}}</span><small class="fw-light d-block">{{ (int)date_diff(date_create($dependent->dob),date_create("today"))->y . " anos de idade" }}</small>'>
+                      title="{{ $dependent->name }}, {{ (int)date_diff(date_create($dependent->dob),date_create("today"))->y }} anos">
                     <span class="bx bx-xs bx-male dependent-{{$dependent->sex === 'MASCULINO' ? 'male' : 'female'}} dependent-icon"></span>
                   </li>
                 @endforeach
@@ -175,14 +96,16 @@
                   <div class="avatar avatar-sm me-2">
                       <?php
                       $works = explode(' ', $item->voluntary_name);
-                      $initials = substr($works[0], 0, 1);
-                      if (count($works) >=2) $initials .= substr($works[1], 0, 1);
+                      $firstName = \Illuminate\Support\Str::ascii($works[0] ?? '');
+                      $secondName = \Illuminate\Support\Str::ascii($works[1] ?? '');
+                      $initials = strtoupper(substr($firstName, 0, 1));
+                      if (count($works) >=2) $initials .= strtoupper(substr($secondName, 0, 1));
                       ?>
                     <span class="avatar-initial rounded-circle bg-label-dark">{{$initials}}</span>
                   </div>
                 </div>
                 <div class="d-flex flex-column">
-                  <a href="javascript:void(0);" class="text-body text-truncate">
+                  <a href="{{ route('voluntary-show', ['id' => $item->voluntary_id]) }}" class="text-body text-truncate">
                     <span class="fw-medium">{{$item->voluntary_name}}</span>
                   </a>
                   <small class="text-truncate text-muted">{{$item->voluntary_name ? "Ativo" : "Inativo"}}</small>
@@ -223,41 +146,19 @@
               >
                 <i class='bx bx-trash fs-4'></i>
               </a>
-{{--              <div class="dropdown">--}}
-{{--                <a href="javascript:void(0);" class="btn dropdown-toggle hide-arrow text-body p-0" data-bs-toggle="dropdown" aria-expanded="false">--}}
-{{--                  <i class="bx bx-dots-vertical-rounded"></i>--}}
-{{--                </a>--}}
-{{--                <div class="dropdown-menu dropdown-menu-end">--}}
-{{--                  @if ($item->contacts_info)--}}
-{{--                    @foreach(json_decode($item->contacts_info) as $contact)--}}
-{{--                      <a href="https://api.whatsapp.com/send?phone=55{{preg_replace('/[^0-9]/', '', $contact->whatsapp)}}" target="_blank" class="dropdown-item">Falar com--}}
-{{--                        {{$item->name}}</a>--}}
-{{--                      <div class="dropdown-divider"></div>--}}
-{{--                    @endforeach--}}
-{{--                  @endif--}}
-{{--                  <a href="javascript:void(0);"--}}
-{{--                     class="dropdown-item delete-record text-danger"--}}
-{{--                     data-bs-toggle="modal"--}}
-{{--                     data-bs-target="#modalConfirmeRemoveAssisted{{$item->id}}">--}}
-{{--                    Deletar--}}
-{{--                  </a>--}}
-{{--                </div>--}}
-{{--              </div>--}}
             </div>
           </td>
         </tr>
 
         {{-- Modals --}}
-        <livewire:assisted.modals.delete-assisted :assistedRegister="$item" lazy="on-load" />
-        <livewire:assisted.modals.view-assisted :assistedRegister="$item" lazy="on-load" />
+        <livewire:assisted.modals.delete-assisted :assistedRegister="$item" :key="'assisted-delete-'.$item->id" />
+        <livewire:assisted.modals.view-assisted :assistedRegister="$item" :key="'assisted-view-'.$item->id" />
       @endforeach
       </tbody>
     </table>
 
-    <div class="row">
-      <div class="col-md-12 mt-5">
-        {{ $assisted->links(data: ['scrollTo' => false]) }}
-      </div>
+    <div class="col-md-12 mt-5">
+      {{ $assisted->links(data: ['scrollTo' => false]) }}
     </div>
   </div>
 </div>
@@ -265,21 +166,3 @@
 @livewireScripts
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
-
-<!-- Script para inicializar tooltips -->
-<script>
-  /*document.addEventListener('livewire:load', function () {
-    console.log('testeeee')
-    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-      return new bootstrap.Tooltip(tooltipTriggerEl);
-    });
-  });
-
-  document.addEventListener('livewire:update', function () {
-    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-      return new bootstrap.Tooltip(tooltipTriggerEl);
-    });
-  });*/
-</script>

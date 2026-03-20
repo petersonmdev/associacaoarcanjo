@@ -21,7 +21,7 @@
           <label for="statusAssisted" class="form-label">Status</label>
           <select class="form-select @error('active') is-invalid @enderror" id="statusAssisted" wire:model="active" aria-label="status">
             @foreach ($statuses as $status)
-              <option value="{{ $status->value }}">{{ $status->label() }}</option>
+              <option value="{{ $status->value }}" @selected($active == $status->value)>{{ $status->label() }}</option>
             @endforeach
           </select>
           @error('active') <span class="d-block invalid-feedback">{{ $message }}</span> @enderror
@@ -39,7 +39,7 @@
           <select class="form-select @error('civil_status') is-invalid @enderror" id="maritalStatusAssisted" wire:model="civil_status" aria-label="Estado civil">
             <option selected>Selecione seu estado civil</option>
             @foreach ($civilStatus as $estadoCivil)
-              <option value="{{ $estadoCivil->value }}">{{ $estadoCivil->value }}</option>
+              <option value="{{ $estadoCivil->value }}" @if($civil_status == $estadoCivil->value) selected @endif>{{ $estadoCivil->value }}</option>
             @endforeach
           </select>
           @error('civil_status') <span class="d-block invalid-feedback">{{ $message }}</span> @enderror
@@ -49,7 +49,7 @@
           <select class="form-select @error('education_level') is-invalid @enderror" id="schoolingAssisted" wire:model="education_level" aria-label="Escolaridade">
             <option selected>Selecione sua escolaridade</option>
             @foreach ($educationLevels as $educationLevel)
-              <option value="{{ $educationLevel->value }}">{{ $educationLevel->value }}</option>
+              <option value="{{ $educationLevel->value }}" @if($education_level == $educationLevel->value) selected @endif>{{ $educationLevel->value }}</option>
             @endforeach
           </select>
           @error('education_level') <span class="d-block invalid-feedback">{{ $message }}</span> @enderror
@@ -114,7 +114,19 @@
       <div class="row">
         <div class="col-12 col-md-4 col-xl mb-3">
           <label for="cepAddressAssisted" class="form-label">CEP</label>
-          <input type="text" class="form-control @error('zipcode') is-invalid @enderror" id="cepAddressAssisted" x-mask="99999-999" wire:model="zipcode" placeholder="99999-999"/>
+          <input type="text" class="form-control @error('zipcode') is-invalid @enderror" id="cepAddressAssisted" x-mask="99999-999" wire:model="zipcode" placeholder="99999-999" @if($dontKnowZipcode) disabled @endif/>
+          <div class="form-check mt-2">
+            <input
+              class="form-check-input"
+              type="checkbox"
+              id="unknownZipcode"
+              wire:model.live="dontKnowZipcode"
+              @checked($dontKnowZipcode)
+            >
+            <label class="form-check-label" for="unknownZipcode">
+              Não sei o CEP
+            </label>
+          </div>
           @error('zipcode') <span class="d-block invalid-feedback">{{ $message }}</span> @enderror
         </div>
         <div class="col-12 col-md-5 col-xl mb-3">
@@ -272,9 +284,11 @@
             <hr class="my-2 pb-3">
           @endforeach
         @else
-          <a href="javascript:void(0);" class="list-group-item list-group-item-action flex-column align-items-start">
-            <p class="mb-1 text-center">Nenhuma renda cadastrada</p>
-          </a>
+          <div class="mb-3 col-12">
+            <div class="alert alert-info text-center" role="alert">
+              Nenhuma renda cadastrada
+            </div>
+          </div>
         @endif
         <div class="mb-0">
           <button class="btn btn-outline-primary" wire:click.prevent="addIncomeUpdate('{{uniqid()}}')">
@@ -349,18 +363,20 @@
       <div class="position-relative">
         <label for="voluntary-assisted" class="form-label">voluntário vinculado</label>
         <select id="voluntary-assisted" class="form-control select2 @error('voluntary_id') is-invalid @enderror" wire:model="voluntary_id">
-          <option value="" selected>Selecione um voluntário</option>
+          <option value="">Nenhum voluntário</option>
           @foreach($voluntaries as $voluntary)
             <option value="{{$voluntary->id}}" @if($voluntary->id === $voluntary_id) selected @endif>{{ $voluntary->name }}</option>
           @endforeach
         </select>
+        <small class="text-muted">Campo opcional.</small>
         @error('voluntary_id') <span class="d-block invalid-feedback">{{ $message }}</span> @enderror
       </div>
     </div>
-    <div class="row mt-3">
-      <div class="col-md">
-        <a class="btn btn-outline-secondary" href="{{url()->previous()}}">Voltar</a>
-        <button class="btn btn-success float-end" type="submit" wire:click="submitFormUser()" >Salvar</button>
+
+    <div class="mt-3">
+      <div class="d-md-flex d-block justify-content-between flex-row-reverse gap-3">
+        <button class="w-100 w-md-auto btn btn-lg btn-success mb-3" type="submit" wire:click="submitFormUser()">Salvar</button>
+        <a class="w-100 w-md-auto btn btn-outline-secondary mb-3" href="{{ route('assisted-list') }}"><i class="bx bx-list-ul me-2"></i> Voltar</a>
       </div>
     </div>
   </div>

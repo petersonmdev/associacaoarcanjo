@@ -21,10 +21,11 @@ class StepFive extends Component
     'data.incomes.*.name' => 'required_if:data.no_incomes,false|string|max:100',
     'data.incomes.*.value' => 'required_if:data.no_incomes,false|numeric|min:1',
   ], message: [
-    'data.incomes.*.name.required_if' => 'Campo obrigatório.',
-    'data.incomes.*.name.max' => 'Tamanho máximo do campo excedido.',
-    'data.incomes.*.value.required_if' => 'Campo obrigatório.',
-    'data.incomes.*.value.min' => 'O valor deve ser maior que R$1.',
+    'data.incomes.*.name.required_if' => 'A origem da renda é obrigatória.',
+    'data.incomes.*.name.max' => 'A origem da renda não pode exceder 100 caracteres.',
+    'data.incomes.*.value.required_if' => 'O valor da renda é obrigatório.',
+    'data.incomes.*.value.numeric' => 'O valor da renda deve ser um número.',
+    'data.incomes.*.value.min' => 'O valor da renda deve ser maior que R$ 1,00.',
   ])]
 
   public function validateStep()

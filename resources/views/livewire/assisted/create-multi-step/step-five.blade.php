@@ -62,10 +62,10 @@
 
     <hr class="mt-3">
 
-    <div class="my-4">
-      <div class="col-12">
-        <button class="btn btn-outline-secondary" type="button" wire:click="back()">Voltar</button>
-        <button class="btn btn-primary float-end" wire:click="validateStep" type="button" >Próximo</button>
+    <div class="mt-3">
+      <div class="d-md-flex d-block justify-content-between flex-row-reverse gap-3">
+        <button class="w-100 w-md-auto btn btn-lg btn-primary mb-3" type="button" wire:click="validateStep">Próximo <i class="bx bx-chevrons-right mr-4"></i></button>
+        <button class="w-100 w-md-auto btn btn-outline-secondary mb-3" type="button" wire:click="back()"><i class="bx bx-chevrons-left"></i> Voltar</button>
       </div>
     </div>
   </div>

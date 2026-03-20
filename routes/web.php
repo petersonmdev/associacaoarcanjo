@@ -114,7 +114,9 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 
 // voluntary
 Route::get('/voluntary/list', [App\Http\Controllers\VoluntaryController::class, 'index'])->name('voluntary-list');
-Route::get('/voluntary/new', [App\Http\Controllers\VoluntaryController::class, 'store'])->name('voluntary-new');
+Route::get('/voluntary/new', [App\Http\Controllers\VoluntaryController::class, 'store'])->name('voluntary-store');
+Route::get('/voluntary/edit/{id}', [App\Http\Controllers\VoluntaryController::class, 'update'])->name('voluntary-update');
+Route::get('/voluntary/show/{id}', [App\Http\Controllers\VoluntaryController::class, 'show'])->name('voluntary-show');
 Route::get('/voluntary/assisted-with-voluntary', [App\Http\Controllers\VoluntaryController::class, 'bindAssisted'])->name('assisted-with-voluntary');
 Route::get('/voluntary/scripting', [App\Http\Controllers\VoluntaryController::class, 'indexScripting'])->name('voluntary-scripting');
 
@@ -145,6 +147,8 @@ Route::middleware(['auth'])->group(function () {
   // voluntary
   Route::get('/voluntary/list', [App\Http\Controllers\VoluntaryController::class, 'index'])->name('voluntary-list');
   Route::get('/voluntary/new', [App\Http\Controllers\VoluntaryController::class, 'store'])->name('voluntary-new');
+  Route::get('/voluntary/edit/{id}', [App\Http\Controllers\VoluntaryController::class, 'update'])->name('voluntary-update');
+  Route::get('/voluntary/show/{id}', [App\Http\Controllers\VoluntaryController::class, 'show'])->name('voluntary-show');
   Route::get('/voluntary/assisted-with-voluntary', [App\Http\Controllers\VoluntaryController::class, 'bindAssisted'])->name('assisted-with-voluntary');
   Route::get('/voluntary/scripting', [App\Http\Controllers\VoluntaryController::class, 'indexScripting'])->name('voluntary-scripting');
 

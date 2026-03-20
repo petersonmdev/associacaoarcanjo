@@ -20,11 +20,26 @@ class ViewAssisted extends Component
 
   public function render()
   {
-    $address = AddressRepository::find($this->assisted->address_id);
-    $contacts = ContactRepository::find($this->assisted->contact_id);
-    $dependents = DependentRepository::findByAssistedId($this->assisted->id);
-    $incomes = IncomeRepository::findByAssistedId($this->assisted->id);
-    $voluntary = VoluntaryRepository::find($this->assisted->voluntary_id);
+    $address = $this->assisted?->address_id !== null
+      ? AddressRepository::find((int) $this->assisted->address_id)
+      : null;
+
+    $contacts = $this->assisted?->contact_id !== null
+      ? ContactRepository::find((int) $this->assisted->contact_id)
+      : null;
+
+    $dependents = $this->assisted?->id !== null
+      ? DependentRepository::findByAssistedId((int) $this->assisted->id)
+      : collect();
+
+    $incomes = $this->assisted?->id !== null
+      ? IncomeRepository::findByAssistedId((int) $this->assisted->id)
+      : collect();
+
+    $voluntary = $this->assisted?->voluntary_id !== null
+      ? VoluntaryRepository::find((int) $this->assisted->voluntary_id)
+      : null;
+
     return view('livewire.assisted.modals.view-assisted', [
       'assistedView' => $this->assisted,
       'addressView' => $address,

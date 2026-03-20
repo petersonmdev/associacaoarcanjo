@@ -37,10 +37,12 @@
       <h5 class="pb-1 text-primary">Endereço</h5>
       @if ($addresses)
         <p class="mb-0">CEP: <span class="fw-medium">{{$addresses->zipcode}}</span></p>
-        <p class="mb-0">Logradouro: <span class="fw-medium">{{$addresses->zipcode. ', ' .$addresses->number}}</span></p>
+        <p class="mb-0">Logradouro: <span class="fw-medium">{{$addresses->address. ', ' .$addresses->number}}</span></p>
         <p class="mb-0">Complemento: <span class="fw-medium">{{$addresses->complement}}</span></p>
         <p class="mb-0">Bairro: <span class="fw-medium">{{$addresses->neighborhood}}</span></p>
         <p class="mb-0"><span class="fw-medium">{{$addresses->city.'-'.$addresses->state}}</span></p>
+      @else
+        <p class="mb-0 text-muted">Endereço não informado.</p>
       @endif
     </div>
   </div>
@@ -49,9 +51,9 @@
 
   <div class="row py-2">
     <div class="col-12 mb-xl-0 mb-md-4 mb-sm-0 mb-2 fs-6">
-      <h5 class="pb-1 text-primary">Composição famíliar</h5>
+      <h5 class="pb-1 text-primary">Composição familiar</h5>
       <div class="list-group">
-        @if ($dependents)
+        @if ($dependents->isNotEmpty())
           @foreach($dependents as $dependent)
             <a href="javascript:void(0);" class="list-group-item list-group-item-action flex-column align-items-start">
               <div class="d-flex justify-content-between w-100 flex-xl-row flex-column flex-md-row">
@@ -78,9 +80,9 @@
 
   <div class="row py-2">
     <div class="col-12 mb-xl-0 mb-md-4 mb-sm-0 mb-2 fs-6">
-      <h5 class="pb-1 text-primary">Renda famíliar mensal</h5>
+      <h5 class="pb-1 text-primary">Renda familiar mensal</h5>
       <div class="list-group">
-        @if ($incomes)
+        @if ($incomes->isNotEmpty())
           @foreach($incomes as $income)
             <a href="javascript:void(0);" class="list-group-item list-group-item-action d-flex justify-content-between">
               <div class="li-wrapper d-flex justify-content-start align-items-center">
@@ -98,7 +100,7 @@
           @endforeach
         @else
           <a href="javascript:void(0);" class="list-group-item list-group-item-action flex-column align-items-start">
-            <p class="mb-1 text-center">Nenhum renda cadastrada</p>
+            <p class="mb-1 text-center">Nenhuma renda cadastrada</p>
           </a>
         @endif
       </div>
@@ -112,7 +114,7 @@
       <h5 class="pb-2 text-primary">Saúde familiar e social</h5>
       <p class="mb-1">História de vida: <span class="fw-medium">{{$assisted->life_history}}</span></p>
       <p class="mb-1">Histórico de saúde: <span class="fw-medium">{{$assisted->health_history}}</span></p>
-      <p class="mb-1">Medicamentos de uso continuo: <span class="fw-medium">{{$assisted->continuous_medication}}</span></p>
+      <p class="mb-1">Medicamentos de uso contínuo: <span class="fw-medium">{{$assisted->continuous_medication}}</span></p>
     </div>
   </div>
 
@@ -121,22 +123,28 @@
   <div class="row py-2">
     <div class="col-12 mb-xl-0 mb-md-4 mb-sm-0 mb-2">
       <h5 class="pb-1 text-primary">Voluntário responsável</h5>
-      <div class="d-flex justify-content-start align-items-center user-name">
-        <div class="avatar-wrapper">
-          <div class="avatar avatar-sm me-2">
-            @php
-            $works = explode(' ', $voluntary->name);
-            $initials = substr($works[0], 0, 1);
-            if (count($works) >=2) $initials .= substr($works[1], 0, 1);
-            @endphp
-            <span class="avatar-initial rounded-circle bg-label-info">{{$initials}}</span>
+      @if ($voluntary)
+        <a href="{{ route('voluntary-show', $voluntary->id) }}" class="d-flex justify-content-start align-items-center user-name">
+          <div class="avatar-wrapper">
+            <div class="avatar avatar-sm me-2">
+              @php
+              $works = explode(' ', $voluntary->name);
+              $firstName = \Illuminate\Support\Str::ascii($works[0] ?? '');
+              $secondName = \Illuminate\Support\Str::ascii($works[1] ?? '');
+              $initials = strtoupper(substr($firstName, 0, 1));
+              if (count($works) >=2) $initials .= strtoupper(substr($secondName, 0, 1));
+              @endphp
+              <span class="avatar-initial rounded-circle bg-label-info">{{$initials}}</span>
+            </div>
           </div>
-        </div>
-        <div class="d-flex flex-column">
-          <span class="fw-medium">{{$voluntary->name}}</span>
-          <small class="text-truncate text-muted">{{$voluntary->active ? "Ativo" : "Inativo"}}</small>
-        </div>
-      </div>
+          <div class="d-flex flex-column">
+            <span class="fw-medium">{{$voluntary->name}}</span>
+            <small class="text-truncate text-muted">{{$voluntary->active ? "Ativo" : "Inativo"}}</small>
+          </div>
+        </a>
+      @else
+        <p class="mb-0 text-muted">Nenhum voluntário vinculado.</p>
+      @endif
     </div>
   </div>
 </div>

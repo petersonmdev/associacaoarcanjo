@@ -4,9 +4,14 @@ declare(strict_types=1);
 
 namespace App\Repositories;
 
+use App\Models\Address;
 use App\Models\Assisted;
+use App\Models\Contact;
+use App\Models\Dependent;
+use App\Models\Income;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\DB;
 
 class AssistedRepository extends AbstractRepository
 {
@@ -43,6 +48,36 @@ class AssistedRepository extends AbstractRepository
     ->orderBy('assisteds.id', 'desc');
   }
 
+  public static function deleteWithRelations(int $id): int
+  {
+    $assisted = self::find($id);
+
+    if (!$assisted) {
+      return 0;
+    }
+
+    return DB::transaction(function () use ($id, $assisted): int {
+      Dependent::query()->where('assisted_id', $id)->delete();
+      Income::query()->where('assisted_id', $id)->delete();
+
+      $deleted = self::delete($id);
+
+      if (!$deleted) {
+        return 0;
+      }
+
+      if ($assisted->contact_id) {
+        Contact::query()->where('id', $assisted->contact_id)->delete();
+      }
+
+      if ($assisted->address_id) {
+        Address::query()->where('id', $assisted->address_id)->delete();
+      }
+
+      return $deleted;
+    });
+  }
+
   public static function getAll() : array {
     return self::loadModel()::all()->toArray();
   }
@@ -61,6 +96,14 @@ class AssistedRepository extends AbstractRepository
     return empty($assisted_name)
       ? $query
       : $query->where('assisteds.name', 'like', '%' . $assisted_name . '%');
+  }
+
+  public static function prioritizeWithoutVoluntaryFirst(Builder $query): Builder
+  {
+    return $query
+      ->reorder()
+      ->orderByRaw('assisteds.voluntary_id IS NULL DESC')
+      ->orderBy('assisteds.id', 'desc');
   }
 
   public static function findByAddressComplete(string $neighborhood, string $city, string $state): Builder
@@ -107,6 +150,15 @@ class AssistedRepository extends AbstractRepository
     }
 
     return self::completeQuery()->whereIn('assisteds.id', $assistedIDs)->get();
+  }
+
+  public static function findIdsByVoluntaryId(int $voluntaryId): array
+  {
+    return self::loadModel()::query()
+      ->where('voluntary_id', $voluntaryId)
+      ->pluck('id')
+      ->map(fn($id) => (int) $id)
+      ->toArray();
   }
 
   public function listPaginate()

@@ -28,6 +28,16 @@
         </div>
       </div>
     </div>
+
+    <div class="col-12 my-3">
+      <div class="card mb-4">
+        <div class="card-widget-separator-wrapper">
+          <div class="card-body card-widget-separator">
+            <livewire:assisted.index-summary-assisted lazy="on-load" />
+          </div>
+        </div>
+      </div>
+    </div>
 {{--    <div class="col-lg-4 col-md-4 order-1">--}}
 {{--      <div class="row">--}}
 {{--        <div class="col-lg-6 col-md-12 col-6 mb-4">--}}

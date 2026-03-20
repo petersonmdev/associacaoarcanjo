@@ -11,18 +11,44 @@ class StepSeven extends Component
   public array $data = [
     'voluntary_id' => null
   ];
+  public string $searchVoluntary = '';
+  public bool $showSuggestions = false;
 
   #[Validate([
-    'data.voluntary_id' => 'required|integer|exists:voluntaries,id',
+    'data.voluntary_id' => 'nullable|integer|exists:voluntaries,id',
   ], message: [
     'data.*.integer' => 'O campo deve conter apenas números.',
-    'data.*.required' => 'Campo obrigatório.',
     'data.voluntary_id.exists' => 'Voluntário inválido.',
   ])]
 
   public function mount($data)
   {
     $this->data = $data;
+
+    if (!empty($this->data['voluntary_id'])) {
+      $selectedVoluntary = VoluntaryRepository::find((int) $this->data['voluntary_id']);
+      $this->searchVoluntary = (string) ($selectedVoluntary->name ?? '');
+      $this->showSuggestions = false;
+    }
+  }
+
+  public function updatedSearchVoluntary(string $value): void
+  {
+    if (trim($value) === '') {
+      $this->data['voluntary_id'] = null;
+      $this->showSuggestions = false;
+    } else {
+      $this->showSuggestions = true;
+    }
+  }
+
+  public function selectVoluntary(int $voluntaryId): void
+  {
+    $selectedVoluntary = VoluntaryRepository::find($voluntaryId);
+
+    $this->data['voluntary_id'] = $voluntaryId;
+    $this->searchVoluntary = (string) ($selectedVoluntary->name ?? '');
+    $this->showSuggestions = false;
   }
 
   public function validateStep()
@@ -38,7 +64,14 @@ class StepSeven extends Component
 
   public function render()
   {
-    $queryVoluntary = VoluntaryRepository::all();
+    $term = trim($this->searchVoluntary);
+
+    $queryVoluntary = ($term === '')
+      ? collect()
+      : VoluntaryRepository::findByVoluntaryNameComplete($term)
+          ->limit(8)
+          ->get();
+
     return view('livewire.assisted.create-multi-step.step-seven',[
       'voluntaries' => $queryVoluntary
     ]);
