@@ -8,10 +8,6 @@
   margin-top: 12px;
 }
 
-.app-brand-logo.demo svg {
-  width: 50px;
-}
-
 .app-brand-text.demo {
   font-size: 1.75rem;
   letter-spacing: -0.5px;
@@ -208,4 +204,3 @@
     height: auto;
   }
 }
-

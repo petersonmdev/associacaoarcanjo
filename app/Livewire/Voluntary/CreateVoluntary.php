@@ -2,14 +2,15 @@
 
 namespace App\Livewire\Voluntary;
 
+use App\Data\VoluntaryUpsertData;
 use Livewire\Component;
 use App\Enums\Status;
 use App\Enums\Driving;
 use App\Repositories\AddressRepository;
 use App\Repositories\AssistedRepository;
 use App\Repositories\ContactRepository;
-use App\Repositories\UserRepository;
 use App\Repositories\VoluntaryRepository;
+use App\Services\VoluntaryService;
 use Exception;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
@@ -260,121 +261,26 @@ class CreateVoluntary extends Component
         return array_values(array_filter(array_map('intval', $this->formData['assisted_id'] ?? [])));
     }
 
-    private function saveUser(): ?int
-    {
-        if (! $this->createUserVoluntary) {
-            return null;
-        }
-
-        try {
-            $user = UserRepository::create([
-                'name' => $this->formData['name'],
-                'email' => $this->formData['email'],
-                'password' => Hash::make($this->formData['user_password']),
-            ]);
-
-            return $user->id;
-        } catch (Exception $e) {
-            Log::error($e);
-            $this->dispatch(
-                'alert',
-                type: 'error',
-                title: 'Ocorreu um erro ao cadastrar o usuário do voluntário.',
-                position: 'center',
-                timer: 1500
-            );
-            return null;
-        }
-    }
-
-    private function saveContact(): ?int
-    {
-      try {
-        $contact = ContactRepository::create([
-          'phone_number_whatsapp' => $this->formData['phone'] ?? '',
-        ]);
-        return $contact->id;
-      } catch (Exception $e) {
-        Log::error($e);
-        $this->dispatch(
-          'alert',
-          type: 'error',
-          title: 'Ocorreu um erro ao cadastrar o(s) telefone(s).',
-          position: 'center',
-          timer: 1500
-        );
-        return null;
-      }
-    }
-
-    private function saveAddress(): ?int
-    {
-      try {
-        $number = $this->formData['address']['number'] ?? null;
-
-        $address = AddressRepository::create([
-          'zipcode' => $this->formData['address']['zipcode'] ?? '',
-          'address' => $this->formData['address']['street'] ?? '',
-          'number' => $number === '' ? null : $number,
-          'complement' => $this->formData['address']['complement'] ?? '',
-          'neighborhood' => $this->formData['address']['neighborhood'] ?? '',
-          'city' => $this->formData['address']['city'] ?? '',
-          'state' => $this->formData['address']['state'] ?? '',
-        ]);
-        return $address->id;
-      } catch (Exception $e) {
-        Log::error($e);
-        $this->dispatch(
-          'alert',
-          type: 'error',
-          title: 'Ocorreu um erro ao cadastrar o endereço.',
-          position: 'center',
-          timer: 1500
-        );
-        return null;
-      }
-    }
-
     private function saveVoluntary()
     {
         try {
-        $userId = null;
+            $upsertData = VoluntaryUpsertData::fromCreateFormData(
+              $this->formData,
+              $this->createUserVoluntary,
+              $this->selectedAssistedIds()
+            );
 
-            if ($this->createUserVoluntary) {
-          $userId = $this->saveUser();
-            }
+            $userData = $upsertData->userData();
 
-            $contactId = $this->saveContact();
-            if ($contactId === null) {
-                return null;
-            }
-
-            $addressId = $this->saveAddress();
-            if ($addressId === null) {
-                return null;
-            }
-
-            $voluntary = VoluntaryRepository::create([
-        'user_id' => $userId,
-                'address_id' => $addressId,
-                'contact_id' => $contactId,
-                'name' => $this->formData['name'],
-              'email' => (string) ($this->formData['email'] ?? ''),
-                'taxvat' => $this->formData['taxvat'],
-                'dob' => $this->formData['dob'],
-                'driving' => $this->formData['driving'],
-                'active' => $this->formData['active'],
-            ]);
-
-            if (isset($this->formData['assisted_id']) && is_array($this->formData['assisted_id'])) {
-                foreach ($this->formData['assisted_id'] as $assistedId) {
-                $assisted = AssistedRepository::find((int) $assistedId);
-                    if ($assisted) {
-                        $assisted->voluntary_id = $voluntary->id;
-                        $assisted->save();
-                    }
-                }
-            }
+            app(VoluntaryService::class)->createWithRelations(
+              $upsertData->voluntaryData(),
+              $upsertData->contactData(),
+              $upsertData->addressData(),
+              $userData !== null
+                ? array_merge($userData, ['password' => Hash::make((string) ($userData['password'] ?? ''))])
+                : null,
+              $upsertData->assistedIds()
+            );
 
             $this->dispatch(
                 'alert',
@@ -389,7 +295,7 @@ class CreateVoluntary extends Component
             $this->dispatch(
                 'alert',
                 type: 'error',
-                title: 'Ocorreu um erro ao cadastrar o voluntário.',
+            title: 'Ocorreu um erro ao salvar o voluntário. Por favor, tente novamente.',
                 position: 'center',
                 timer: 1500
             );

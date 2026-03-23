@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Assisted;
 
+use App\Data\AssistedUpsertData;
 use App\Enums\BrazilStates;
 use App\Enums\CivilStatus;
 use App\Enums\EducationLevel;
@@ -14,6 +15,8 @@ use App\Repositories\ContactRepository;
 use App\Repositories\DependentRepository;
 use App\Repositories\IncomeRepository;
 use App\Repositories\VoluntaryRepository;
+use App\Services\AssistedService;
+use Exception;
 use Illuminate\Support\Facades\Log;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
@@ -251,34 +254,8 @@ class UpdateAssisted extends Component
 
   public function removeDependentUpdate($index, $id = null)
   {
-    try {
-      if ($id) {
-        foreach ($this->dependents as $dependent) {
-          if($dependent['id'] === $id) {
-            DependentRepository::delete($id);
-            unset($this->dependents[$index]);
-            $this->dispatch(
-              'alert',
-              type: 'error',
-              title: 'Dependente deletado!',
-              position: 'center',
-              timer: 1500
-            );
-          }
-        }
-      } else {
-        unset($this->dependents[$index]);
-      }
-    } catch (Exception $e) {
-      Log::error($e);
-      $this->dispatch(
-        'alert',
-        type: 'error',
-        title: 'Ocorreu um erro ao remover dependente. Por favor, tente novamente. ',
-        position: 'center',
-        timer: 1500
-      );
-    }
+    unset($this->dependents[$index]);
+    $this->dependents = array_values($this->dependents);
   }
 
   public function addIncomeUpdate($hash)
@@ -298,34 +275,8 @@ class UpdateAssisted extends Component
 
   public function removeIncomeUpdate($index, $id = null)
   {
-    try {
-      if ($id) {
-        foreach ($this->incomes as $income) {
-          if($income['id'] === $id) {
-            IncomeRepository::delete($id);
-            unset($this->incomes[$index]);
-            $this->dispatch(
-              'alert',
-              type: 'error',
-              title: 'Renda deletada!',
-              position: 'center',
-              timer: 1500
-            );
-          }
-        }
-      } else {
-        unset($this->incomes[$index]);
-      }
-    } catch (Exception $e) {
-      Log::error($e);
-      $this->dispatch(
-        'alert',
-        type: 'error',
-        title: 'Ocorreu um erro ao remover renda. Por favor, tente novamente. ',
-        position: 'center',
-        timer: 1500
-      );
-    }
+    unset($this->incomes[$index]);
+    $this->incomes = array_values($this->incomes);
   }
 
   public function submitFormUser()
@@ -333,11 +284,16 @@ class UpdateAssisted extends Component
     $this->validate();
 
     try {
-      $this->updateContact();
-      $this->updateAddress();
-      $this->updateAssisted();
-      $this->updateDependent();
-      $this->updateIncomes();
+      $upsertData = AssistedUpsertData::fromUpdateFields($this->upsertFields());
+
+      app(AssistedService::class)->updateWithRelations(
+        (int) $this->id,
+        $upsertData->assistedData(),
+        $upsertData->contactData(),
+        $upsertData->addressData(),
+        $upsertData->dependentsData(),
+        $upsertData->incomesData()
+      );
 
       $this->dispatch(
         'alert',
@@ -361,7 +317,16 @@ class UpdateAssisted extends Component
   public function changeVoluntary()
   {
     try {
-      $this->updateVoluntary();
+      $upsertData = AssistedUpsertData::fromUpdateFields($this->upsertFields());
+
+      app(AssistedService::class)->updateWithRelations(
+        (int) $this->id,
+        $upsertData->assistedData(),
+        $upsertData->contactData(),
+        $upsertData->addressData(),
+        $upsertData->dependentsData(),
+        $upsertData->incomesData()
+      );
 
       $this->dispatch(
         'alert',
@@ -382,25 +347,9 @@ class UpdateAssisted extends Component
     }
   }
 
-  private function updateEntity($repository, $id, array $data)
+  private function upsertFields(): array
   {
-    try {
-      $repository::update($id, $data);
-    } catch (Exception $e) {
-      Log::error($e);
-      $this->dispatch(
-        'alert',
-        type: 'error',
-        title: 'Erro ao atualizar ' . class_basename($repository) . '. ',
-        position: 'center',
-        timer: 1500
-      );
-    }
-  }
-
-  private function updateAssisted()
-  {
-    $this->updateEntity(AssistedRepository::class, $this->id, [
+    return [
       'voluntary_id' => $this->voluntary_id ?: null,
       'name' => $this->name,
       'email' => $this->email,
@@ -413,108 +362,19 @@ class UpdateAssisted extends Component
       'active' => $this->active,
       'life_history' => $this->life_history,
       'health_history' => $this->health_history,
-      'continuous_medication' => $this->continuous_medication
-    ]);
-  }
-
-  private function updateContact()
-  {
-    $this->updateEntity(ContactRepository::class, $this->repositoryContact->id, [
+      'continuous_medication' => $this->continuous_medication,
       'phone_number_whatsapp' => $this->phone_number_whatsapp,
       'phone_number1' => $this->phone_number1,
-      'phone_number2' => $this->phone_number2
-    ]);
-  }
-
-  private function updateAddress()
-  {
-    $this->updateEntity(AddressRepository::class, $this->repositoryAddress->id, [
+      'phone_number2' => $this->phone_number2,
       'zipcode' => $this->zipcode,
       'address' => $this->address,
       'number' => $this->number,
       'complement' => $this->complement,
       'neighborhood' => $this->neighborhood,
       'city' => $this->city,
-      'state' => $this->state
-    ]);
-  }
-
-  private function updateVoluntary()
-  {
-    $this->updateEntity(AddressRepository::class, $this->repositoryAddress->id, [
-      'zipcode' => $this->zipcode,
-      'address' => $this->address,
-      'number' => $this->number,
-      'complement' => $this->complement,
-      'neighborhood' => $this->neighborhood,
-      'city' => $this->city,
-      'state' => $this->state
-    ]);
-  }
-
-  private function updateDependent()
-  {
-    try {
-      foreach ($this->dependents as $index => $dependent) {
-        $data = [
-          'name' => $dependent['name'] ?? null,
-          'dob' => $dependent['dob'] ?? null,
-          'sex' => $dependent['sex'] ?? null,
-          'parentage' => $dependent['parentage'] ?? null,
-          'profession' => $dependent['profession'] ?? null,
-          'pne' => (int)$dependent['pne'] ?? null,
-          'assisted_id' => (int)$dependent['assisted_id'] ?? null
-        ];
-
-        if ($dependent['id'] !== null) {
-          $data['id'] = $dependent['id'];
-          DependentRepository::update((int)$dependent['id'], $data);
-        } else {
-          $salved = DependentRepository::create($data);
-          $this->dependents[$index]['id'] = $salved->id;
-        }
-      }
-
-    } catch (Exception $e) {
-      Log::error($e);
-      $this->dispatch(
-        'alert',
-        type: 'error',
-        title: 'Ocorreu um erro ao atualizar os dependentes. ',
-        position: 'center',
-        timer: 1500
-      );
-    }
-  }
-
-  private function updateIncomes()
-  {
-    try {
-      foreach ($this->incomes as $index => $income) {
-        $data = [
-          'name' => $income['name'] ?? null,
-          'incomes' => (double)$income['incomes'] ?? null,
-          'assisted_id' => (int)$income['assisted_id'] ?? null
-        ];
-
-        if ($income['id'] !== null) {
-          $data['id'] = $income['id'];
-          IncomeRepository::update((int)$income['id'], $data);
-        } else {
-          $salved = IncomeRepository::create($data);
-          $this->incomes[$index]['id'] = $salved->id;
-        }
-      }
-
-    } catch (Exception $e) {
-      Log::error($e);
-      $this->dispatch(
-        'alert',
-        type: 'error',
-        title: 'Ocorreu um erro ao atualizar a renda familiar. ',
-        position: 'center',
-        timer: 1500
-      );
-    }
+      'state' => $this->state,
+      'dependents' => $this->dependents,
+      'incomes' => $this->incomes,
+    ];
   }
 }

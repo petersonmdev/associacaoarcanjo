@@ -6,7 +6,6 @@ namespace App\Repositories;
 
 use App\Models\Voluntary;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Facades\DB;
 
 class VoluntaryRepository extends AbstractRepository
 {
@@ -84,36 +83,5 @@ class VoluntaryRepository extends AbstractRepository
   public static function findByLastedCreated(int $id)
   {
     return self::loadModel()::query()->join('addresses', 'voluntaries.address_id', '=', 'addresses.id')->where('voluntaries.id', '=', $id);
-  }
-
-  public static function deleteWithRelations(int $id): int
-  {
-    $voluntary = self::find($id);
-
-    if (!$voluntary) {
-      return 0;
-    }
-
-    return DB::transaction(function () use ($id, $voluntary): int {
-      $deleted = self::delete($id);
-
-      if (!$deleted) {
-        return 0;
-      }
-
-      if ($voluntary->user_id) {
-        \App\Models\User::query()->where('id', $voluntary->user_id)->delete();
-      }
-
-      if ($voluntary->contact_id) {
-        \App\Models\Contact::query()->where('id', $voluntary->contact_id)->delete();
-      }
-
-      if ($voluntary->address_id) {
-        \App\Models\Address::query()->where('id', $voluntary->address_id)->delete();
-      }
-
-      return $deleted;
-    });
   }
 }

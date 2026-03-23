@@ -25,7 +25,7 @@ class StepOne extends Component
   #[Validate([
     'data.name' => 'required|string|max:255',
     'data.dob' => ['required', 'regex:/^(19|20)\d{2}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$/'],
-    'data.taxvat' => ['required', 'regex:/^\d{3}\x2E\d{3}\x2E\d{3}\x2D\d{2}$/'],
+    'data.taxvat' => ['required', 'regex:/^\d{3}\x2E\d{3}\x2E\d{3}\x2D\d{2}$/', 'unique:assisteds,taxvat'],
     'data.email' => 'email',
   ], message: [
     'data.name.required' => 'O nome é obrigatório.',
@@ -34,6 +34,7 @@ class StepOne extends Component
     'data.dob.regex' => 'Data de nascimento inválida. Use o formato DD/MM/AAAA.',
     'data.taxvat.required' => 'O CPF é obrigatório.',
     'data.taxvat.regex' => 'CPF inválido. Use o formato 000.000.000-00.',
+    'data.taxvat.unique' => 'Este CPF já está cadastrado.',
     'data.email.email' => 'Informe um e-mail válido.',
     'data.*.required' => 'Campo obrigatório.',
     'data.*.max' => 'Tamanho máximo do campo excedido.',
