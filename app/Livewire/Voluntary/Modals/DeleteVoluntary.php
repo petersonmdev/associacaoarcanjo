@@ -3,6 +3,7 @@
 namespace App\Livewire\Voluntary\Modals;
 
 use App\Repositories\VoluntaryRepository;
+use App\Services\VoluntaryService;
 use Exception;
 use Illuminate\Support\Facades\Log;
 use Livewire\Component;
@@ -26,7 +27,7 @@ class DeleteVoluntary extends Component
   public function deleteVoluntary($id)
   {
     try {
-      $deleted = VoluntaryRepository::deleteWithRelations((int) $id);
+      $deleted = app(VoluntaryService::class)->deleteWithRelations((int) $id);
 
       if ($deleted) {
         $this->dispatch(

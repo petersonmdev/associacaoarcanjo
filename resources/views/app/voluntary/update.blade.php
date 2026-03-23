@@ -1,13 +1,13 @@
 @extends('layouts/contentNavbarLayout')
 
-@section('title', 'Editar Voluntário')
+@section('title', "Editar " . ($voluntary->name ?? 'voluntário'))
 
 @section('content')
 <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Voluntários /</span> Editar voluntário</h4>
 <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
 
   <div class="d-flex flex-column justify-content-center">
-    <h4 class="mb-1 mt-3">Editar {{ $voluntary->name }}</h4>
+    <h4 class="mb-1 mt-3">Editar {{ $voluntary->name ?? 'voluntário' }}</h4>
     @if ($voluntary) <p class="text-muted">Editar cadastro <span class="fw-medium">{{ '#'.sprintf('%04d', $id) }}</span></p> @endif
   </div>
   <div class="d-flex align-content-center flex-wrap gap-3">

@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Voluntary;
 
+use App\Data\VoluntaryUpsertData;
 use App\Enums\BrazilStates;
 use App\Enums\Driving;
 use App\Enums\Status;
@@ -9,6 +10,7 @@ use App\Repositories\AddressRepository;
 use App\Repositories\AssistedRepository;
 use App\Repositories\ContactRepository;
 use App\Repositories\VoluntaryRepository;
+use App\Services\VoluntaryService;
 use App\Traits\Livewire\WithAssistedLinking;
 use App\Traits\Livewire\WithCepLookup;
 use Exception;
@@ -135,10 +137,30 @@ class UpdateVoluntary extends Component
     $this->validate();
 
     try {
-      $this->updateContact();
-      $this->updateAddress();
-      $this->updateVoluntary();
-      $this->syncAssisteds();
+      $upsertData = VoluntaryUpsertData::fromUpdateFields([
+        'name' => $this->name,
+        'email' => $this->email,
+        'taxvat' => $this->taxvat,
+        'dob' => $this->dob,
+        'driving' => $this->driving,
+        'active' => $this->active,
+        'phone' => $this->phone,
+        'zipcode' => $this->zipcode,
+        'street' => $this->street,
+        'number' => $this->number,
+        'complement' => $this->complement,
+        'neighborhood' => $this->neighborhood,
+        'city' => $this->city,
+        'state' => $this->state,
+      ], $this->selectedAssistedIds);
+
+      app(VoluntaryService::class)->updateWithRelations(
+        (int) $this->id,
+        $upsertData->voluntaryData(),
+        $upsertData->contactData(),
+        $upsertData->addressData(),
+        $upsertData->assistedIds()
+      );
 
       $this->dispatch(
         'alert',
@@ -159,73 +181,4 @@ class UpdateVoluntary extends Component
     }
   }
 
-  private function syncAssisteds(): void
-  {
-    // Detach assisteds no longer in the list
-    $currentIds = AssistedRepository::findIdsByVoluntaryId((int) $this->id);
-    foreach (array_diff($currentIds, $this->selectedAssistedIds) as $removedId) {
-      $assisted = AssistedRepository::find($removedId);
-      if ($assisted) {
-        $assisted->voluntary_id = null;
-        $assisted->save();
-      }
-    }
-
-    // Attach newly added assisteds
-    foreach (array_diff($this->selectedAssistedIds, $currentIds) as $addedId) {
-      $assisted = AssistedRepository::find($addedId);
-      if ($assisted) {
-        $assisted->voluntary_id = (int) $this->id;
-        $assisted->save();
-      }
-    }
-  }
-
-  private function updateEntity(string $repository, int $id, array $data): void
-  {
-    try {
-      $repository::update($id, $data);
-    } catch (Exception $e) {
-      Log::error($e);
-      $this->dispatch(
-        'alert',
-        type: 'error',
-        title: 'Erro ao atualizar ' . class_basename($repository) . '.',
-        position: 'center',
-        timer: 1500
-      );
-    }
-  }
-
-  private function updateVoluntary(): void
-  {
-    $this->updateEntity(VoluntaryRepository::class, $this->id, [
-      'name'    => $this->name,
-      'email'   => $this->email,
-      'taxvat'  => $this->taxvat,
-      'dob'     => $this->dob,
-      'driving' => $this->driving,
-      'active'  => $this->active,
-    ]);
-  }
-
-  private function updateContact(): void
-  {
-    $this->updateEntity(ContactRepository::class, $this->repositoryContact->id, [
-      'phone_number_whatsapp' => $this->phone,
-    ]);
-  }
-
-  private function updateAddress(): void
-  {
-    $this->updateEntity(AddressRepository::class, $this->repositoryAddress->id, [
-      'zipcode'      => $this->zipcode,
-      'address'      => $this->street,
-      'number'       => $this->number,
-      'complement'   => $this->complement,
-      'neighborhood' => $this->neighborhood,
-      'city'         => $this->city,
-      'state'        => $this->state,
-    ]);
-  }
 }

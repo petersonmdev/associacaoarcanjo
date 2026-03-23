@@ -2,12 +2,9 @@
 
 namespace App\Livewire\Assisted;
 
-use App\Repositories\AddressRepository;
-use App\Repositories\AssistedRepository;
-use App\Repositories\ContactRepository;
-use App\Repositories\DependentRepository;
-use App\Repositories\IncomeRepository;
+use App\Data\AssistedUpsertData;
 use App\Repositories\VoluntaryRepository;
+use App\Services\AssistedService;
 use Exception;
 use Illuminate\Support\Facades\Log;
 use Livewire\Component;
@@ -56,11 +53,15 @@ class CreateAssisted extends Component
   {
     if ($this->current === $this->lastStep()) {
       try {
-        $contactId = $this->saveContact();
-        $addressId = $this->saveAddress();
-        $assistedId = $this->saveAssisted($contactId, $addressId);
-        $this->saveDependent($assistedId);
-        $this->saveIncome($assistedId);
+        $upsertData = AssistedUpsertData::fromCreateFormData($this->formData);
+
+        app(AssistedService::class)->createWithRelations(
+          $upsertData->assistedData(),
+          $upsertData->contactData(),
+          $upsertData->addressData(),
+          $upsertData->dependentsData(),
+          $upsertData->incomesData()
+        );
 
         $this->dispatch(
           'alert',
@@ -84,110 +85,6 @@ class CreateAssisted extends Component
     } else {
       $currentIndex = array_search($this->current, $this->steps);
       $this->current = $this->steps[(int)$currentIndex + 1];
-    }
-  }
-
-  private function saveAssisted(int $contact_id, int $address_id): int
-  {
-    try {
-      $assisted = AssistedRepository::create(array_merge($this->formData, [
-        'contact_id' => $contact_id,
-        'address_id' => $address_id,
-      ]));
-      return $assisted->id;
-    } catch (Exception $e) {
-      Log::error($e);
-      $this->dispatch(
-        'alert',
-        type: 'error',
-        title: 'Ocorreu um erro ao cadastrar o assistido.',
-        position: 'center',
-        timer: 1500
-      );
-    }
-  }
-
-  private function saveContact(): int
-  {
-    try {
-      $contact = ContactRepository::create($this->formData);
-      return $contact->id;
-    } catch (Exception $e) {
-      Log::error($e);
-      $this->dispatch(
-        'alert',
-        type: 'error',
-        title: 'Ocorreu um erro ao cadastrar o(s) telefone(s).',
-        position: 'center',
-        timer: 1500
-      );
-    }
-  }
-
-  private function saveAddress(): int
-  {
-    try {
-      $address = AddressRepository::create($this->formData);
-      return $address->id;
-    } catch (Exception $e) {
-      Log::error($e);
-      $this->dispatch(
-        'alert',
-        type: 'error',
-        title: 'Ocorreu um erro ao cadastrar o endereço.',
-        position: 'center',
-        timer: 1500
-      );
-    }
-  }
-
-  private function saveDependent(int $assistedId): void
-  {
-    try {
-      foreach ($this->formData['dependents'] as $dependent) {
-        $data = [
-          'name' => $dependent['dependent_name'] ?? null,
-          'dob' => $dependent['dependent_dob'] ?? null,
-          'sex' => $dependent['dependent_sex'] ?? null,
-          'parentage' => $dependent['dependent_parentage'] ?? null,
-          'profession' => $dependent['dependent_occupation'] ?? null,
-          'pne' => $dependent['dependent_pne'] ?? null,
-          'assisted_id' => $assistedId
-        ];
-
-        DependentRepository::create($data);
-      }
-    } catch (Exception $e) {
-      Log::error($e);
-      $this->dispatch(
-        'alert',
-        type: 'error',
-        title: 'Ocorreu um erro ao cadastrar os dependentes.',
-        position: 'center',
-        timer: 1500
-      );
-    }
-  }
-
-  private function saveIncome(int $assistedId):void
-  {
-    try {
-      foreach ($this->formData['incomes'] as $income) {
-        IncomeRepository::create([
-          'name' => $income['name'],
-          'incomes' => $income['value'],
-          'assisted_id' => $assistedId
-        ]);
-      }
-    } catch (Exception $e) {
-      Log::error($e);
-      $this->dispatch(
-        'alert',
-        type: 'error',
-        title: 'Ocorreu um erro ao cadastrar a(s) renda(s).',
-        position: 'center',
-        timer: 1500
-      );
     }
   }
 

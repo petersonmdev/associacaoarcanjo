@@ -3,6 +3,7 @@
 namespace App\Livewire\Assisted\Modals;
 
 use App\Repositories\AssistedRepository;
+use App\Services\AssistedService;
 use Illuminate\Support\Facades\Log;
 use Livewire\Component;
 use Exception;
@@ -25,7 +26,7 @@ class DeleteAssisted extends Component
   public function deleteAssisted($id)
   {
     try {
-      $deleted = AssistedRepository::deleteWithRelations($id);
+      $deleted = app(AssistedService::class)->deleteWithRelations((int) $id);
 
       if ($deleted) {
        $this->dispatch(

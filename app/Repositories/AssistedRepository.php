@@ -7,11 +7,8 @@ namespace App\Repositories;
 use App\Models\Address;
 use App\Models\Assisted;
 use App\Models\Contact;
-use App\Models\Dependent;
-use App\Models\Income;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Facades\DB;
 
 class AssistedRepository extends AbstractRepository
 {
@@ -46,36 +43,6 @@ class AssistedRepository extends AbstractRepository
     }, 'incomes_info')
     ->leftJoin('voluntaries', 'assisteds.voluntary_id', '=', 'voluntaries.id')
     ->orderBy('assisteds.id', 'desc');
-  }
-
-  public static function deleteWithRelations(int $id): int
-  {
-    $assisted = self::find($id);
-
-    if (!$assisted) {
-      return 0;
-    }
-
-    return DB::transaction(function () use ($id, $assisted): int {
-      Dependent::query()->where('assisted_id', $id)->delete();
-      Income::query()->where('assisted_id', $id)->delete();
-
-      $deleted = self::delete($id);
-
-      if (!$deleted) {
-        return 0;
-      }
-
-      if ($assisted->contact_id) {
-        Contact::query()->where('id', $assisted->contact_id)->delete();
-      }
-
-      if ($assisted->address_id) {
-        Address::query()->where('id', $assisted->address_id)->delete();
-      }
-
-      return $deleted;
-    });
   }
 
   public static function getAll() : array {
