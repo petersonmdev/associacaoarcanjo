@@ -48,27 +48,13 @@ jobs:
             php artisan migrate --force
 
   # deploy production
-  approve-production:
-    runs-on: ubuntu-latest
-    needs: deploy-homolog
-    if: ${{ github.ref_name == 'main' }}
-    steps:
-      - name: Manual approval to deploy production
-        uses: trstringer/manual-approval@v1
-        with:
-          secret: ${{ secrets.GITHUB_TOKEN }}
-          approvers: ${{ vars.DEPLOY_APPROVERS != '' && format('{0},{1}', vars.DEPLOY_APPROVERS, github.repository_owner) || github.repository_owner }}
-          minimum-approvals: 1
-          issue-title: "Approve production deployment"
-          issue-body: "Please approve to continue deploy-production."
-
   deploy-production:
     runs-on: ubuntu-latest
     environment:
       name: production
       url: ${{ vars.URL }}
-    needs: approve-production
-    if: ${{ github.ref_name == 'main' }}
+    needs: deploy-homolog
+    if: github.ref == 'refs/heads/main'
     steps:
       - uses: shivammathur/setup-php@v2
         with:
