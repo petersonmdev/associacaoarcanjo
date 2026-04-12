@@ -30,4 +30,26 @@ enum Relationships: string
   case SOBRINHO = 'Sobrinho';
   case TIA = 'Tia';
   case TIO = 'Tio';
+
+  public static function labelFrom(?string $raw): ?string
+  {
+    if ($raw === null || $raw === '') {
+      return null;
+    }
+
+    $byValue = self::tryFrom($raw);
+    if ($byValue instanceof self) {
+      return $byValue->value;
+    }
+
+    $const = self::class . '::' . $raw;
+    if (defined($const)) {
+      $case = constant($const);
+      if ($case instanceof self) {
+        return $case->value;
+      }
+    }
+
+    return $raw;
+  }
 }

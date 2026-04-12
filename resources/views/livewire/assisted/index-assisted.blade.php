@@ -72,11 +72,17 @@
             <ul class="list-unstyled users-list m-0 avatar-group d-flex align-items-center">
               @if ($item->dependents_info)
                 @foreach(json_decode($item->dependents_info) as $dependent)
+                  @php
+                    $normalizedSex = strtoupper(trim((string) $dependent->sex));
+                    $dependentSexClass = $normalizedSex === 'MASCULINO'
+                      ? 'male'
+                      : ($normalizedSex === 'FEMININO' ? 'female' : 'neutral');
+                  @endphp
                   <li data-bs-toggle="tooltip"
                       data-bs-placement="top"
                       class="avatar avatar-xs pull-up text-body"
                       title="{{ $dependent->name }}, {{ (int)date_diff(date_create($dependent->dob),date_create("today"))->y }} anos">
-                    <span class="bx bx-xs bx-male dependent-{{$dependent->sex === 'MASCULINO' ? 'male' : 'female'}} dependent-icon"></span>
+                    <span class="bx bx-xs bx-male dependent-{{$dependentSexClass}} dependent-icon"></span>
                   </li>
                 @endforeach
                   <?php

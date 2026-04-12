@@ -55,8 +55,8 @@
       "icon": "menu-icon tf-icons bx bxs-report",
       "slug": "reports",
       "badge": [
-        "label-warning fs-tiny",
-        "Em breve"
+        "label-info fs-tiny",
+        "Novo"
       ],
       "submenu": [
         {
