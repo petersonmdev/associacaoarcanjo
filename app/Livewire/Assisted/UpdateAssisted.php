@@ -139,7 +139,7 @@ class UpdateAssisted extends Component
   public function fillFormFields()
   {
     $this->name = (string) ($this->repositoryAssisted?->name ?? '');
-    $this->dob = (string) ($this->repositoryAssisted?->dob ?? '');
+    $this->dob = $this->normalizeDateForInput($this->repositoryAssisted?->dob);
     $this->active = (int) ($this->repositoryAssisted?->active ?? Status::ATIVO->value);
     $this->taxvat = (string) ($this->repositoryAssisted?->taxvat ?? '');
     $this->civil_status = (string) ($this->repositoryAssisted?->civil_status ?? '');
@@ -164,7 +164,7 @@ class UpdateAssisted extends Component
         'hash' => uniqid(),
         'id' => $dependent->id,
         'name' => $dependent->name,
-        'dob' => $dependent->dob,
+        'dob' => $this->normalizeDateForInput($dependent->dob),
         'sex' => $dependent->sex,
         'parentage' => $dependent->parentage,
         'profession' => $dependent->profession,
@@ -186,6 +186,27 @@ class UpdateAssisted extends Component
     $this->health_history = (string) ($this->repositoryAssisted?->health_history ?? '');
     $this->continuous_medication = (string) ($this->repositoryAssisted?->continuous_medication ?? '');
     $this->voluntary_id = $this->repositoryVoluntary?->id;
+  }
+
+  private function normalizeDateForInput(mixed $value): string
+  {
+    if (empty($value)) {
+      return '';
+    }
+
+    if ($value instanceof \DateTimeInterface) {
+      return $value->format('Y-m-d');
+    }
+
+    $stringValue = (string) $value;
+
+    if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $stringValue) === 1) {
+      return $stringValue;
+    }
+
+    $timestamp = strtotime($stringValue);
+
+    return $timestamp !== false ? date('Y-m-d', $timestamp) : '';
   }
 
   public function updatedVoluntaryId($value): void

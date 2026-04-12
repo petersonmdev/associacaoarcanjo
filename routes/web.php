@@ -135,6 +135,12 @@ Route::get('/user/role', [App\Http\Controllers\UserController::class, 'indexRole
 // reports
 Route::get('/report/assisted', [App\Http\Controllers\ReportAssistedController::class, 'index'])->name('report-assisted');
 Route::get('/report/voluntary', [App\Http\Controllers\ReportVoluntaryController::class, 'index'])->name('report-voluntary');
+Route::get('/report/assisted/export/csv', [App\Http\Controllers\ReportAssistedController::class, 'export'])->name('report-assisted-export-csv');
+Route::get('/report/assisted/export/pdf', [App\Http\Controllers\ReportAssistedController::class, 'exportPdf'])->name('report-assisted-export-pdf');
+Route::get('/report/assisted/print', [App\Http\Controllers\ReportAssistedController::class, 'print'])->name('report-assisted-print');
+Route::get('/report/voluntary/export/csv', [App\Http\Controllers\ReportVoluntaryController::class, 'export'])->name('report-voluntary-export-csv');
+Route::get('/report/voluntary/export/pdf', [App\Http\Controllers\ReportVoluntaryController::class, 'exportPdf'])->name('report-voluntary-export-pdf');
+Route::get('/report/voluntary/print', [App\Http\Controllers\ReportVoluntaryController::class, 'print'])->name('report-voluntary-print');
 
 Route::middleware(['auth'])->group(function () {
   // assisted
