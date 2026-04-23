@@ -1,6 +1,11 @@
 @php
 $containerNav = $containerNav ?? 'container-fluid';
 $navbarDetached = ($navbarDetached ?? '');
+$authUser = Auth::user();
+$profilePhotoPath = optional($authUser)->profile_photo_path;
+$profilePhotoUrl = $profilePhotoPath ? asset($profilePhotoPath) : asset('assets/img/avatars/avatar-default.png');
+$accountUrl = $authUser ? route('account-user', ['id' => $authUser->id]) : 'javascript:void(0);';
+$configurationUrl = $authUser ? route('configuration-user', ['id' => $authUser->id]) : 'javascript:void(0);';
 
 @endphp
 
@@ -45,20 +50,20 @@ $navbarDetached = ($navbarDetached ?? '');
           <li class="nav-item navbar-dropdown dropdown-user dropdown">
             <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
               <div class="avatar">
-                <img src="{{ (Auth::user()->profile_photo_path) ? asset(Auth::user()->profile_photo_path) : asset('assets/img/avatars/avatar-default.png')}}" alt class="w-px-40 h-auto rounded-circle"/>
+                <img src="{{ $profilePhotoUrl }}" alt class="w-px-40 h-auto rounded-circle"/>
               </div>
             </a>
             <ul class="dropdown-menu dropdown-menu-end">
               <li>
-                <a class="dropdown-item" href="{{ route('account-user', ['id' => Auth::user()->id]) }}">
+                <a class="dropdown-item" href="{{ $accountUrl }}">
                   <div class="d-flex">
                     <div class="flex-shrink-0 me-3">
                       <div class="avatar">
-                        <img src="{{ (Auth::user()->profile_photo_path) ? asset(Auth::user()->profile_photo_path) : asset('assets/img/avatars/avatar-default.png')}}" alt class="w-px-40 h-auto rounded-circle"/>
+                        <img src="{{ $profilePhotoUrl }}" alt class="w-px-40 h-auto rounded-circle"/>
                       </div>
                     </div>
                     <div class="flex-grow-1">
-                      <span class="fw-medium d-block">{{ (Auth::user()) ? Auth::user()->name : ''}}</span>
+                      <span class="fw-medium d-block">{{ $authUser?->name ?? 'Usuário' }}</span>
                       <small class="text-muted">Admin</small>
                     </div>
                   </div>
@@ -67,29 +72,37 @@ $navbarDetached = ($navbarDetached ?? '');
               <li>
                 <div class="dropdown-divider"></div>
               </li>
-              <li>
-                <a class="dropdown-item" href="{{ route('account-user', ['id' => Auth::user()->id]) }}">
-                  <i class="bx bx-user me-2"></i>
-                  <span class="align-middle">Minha conta</span>
-                </a>
-              </li>
-              <li>
-                <a class="dropdown-item" href="{{ route('configuration-user', ['id' => Auth::user()->id]) }}">
-                  <i class='bx bx-cog me-2'></i>
-                  <span class="align-middle">Configurações</span>
-                </a>
-              </li>
+              @if($authUser)
+                <li>
+                  <a class="dropdown-item" href="{{ $accountUrl }}">
+                    <i class="bx bx-user me-2"></i>
+                    <span class="align-middle">Minha conta</span>
+                  </a>
+                </li>
+                <li>
+                  <a class="dropdown-item" href="{{ $configurationUrl }}">
+                    <i class='bx bx-cog me-2'></i>
+                    <span class="align-middle">Configurações</span>
+                  </a>
+                </li>
+              @else
+                <li>
+                  <span class="dropdown-item text-muted">Sessão expirada</span>
+                </li>
+              @endif
               <li>
                 <div class="dropdown-divider"></div>
               </li>
-              <li>
-                <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                  {{ __('Sair') }}
-                </a>
-                <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                  @csrf
-                </form>
-              </li>
+              @if($authUser)
+                <li>
+                  <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                    {{ __('Sair') }}
+                  </a>
+                  <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                    @csrf
+                  </form>
+                </li>
+              @endif
             </ul>
           </li>
           <!--/ User -->
